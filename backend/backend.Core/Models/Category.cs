@@ -1,7 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
+using backend.Core.Converters;
+using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 
 namespace backend.Core.Models;
@@ -12,6 +15,8 @@ namespace backend.Core.Models;
 public class Category
 {
     [BsonId]
-    public int Id { get; set; }
+    [BsonRepresentation(BsonType.ObjectId)]
+    [JsonConverter(typeof(ObjectIdToStringConverter))]
+    public ObjectId Id { get; set; }
     public required string Name { get; set; }
 }

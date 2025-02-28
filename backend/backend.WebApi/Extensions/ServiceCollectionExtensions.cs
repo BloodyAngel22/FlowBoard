@@ -36,6 +36,9 @@ namespace backend.WebApi.Extensions
             services.AddScoped<IKanbanBoardRepository, KanbanBoardRepository>();
             services.AddScoped<KanbanBoardService>();
 
+            services.AddScoped<ICategoryRepository, CategoryRepository>();
+            services.AddScoped<CategoryService>();
+
             return services;
         }
 
