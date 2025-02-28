@@ -15,26 +15,6 @@ namespace backend.WebApi.Controllers
     {
         private readonly KanbanBoardService _kanbanBoardService = kanbanBoardService;
 
-        // [HttpGet]
-        // public async Task<IActionResult> GetListTasks(ObjectId projectId)
-        // {
-        //     var result = await _kanbanBoardService.GetListTasks(projectId);
-
-        //     return result.Success
-        //         ? ResponseHelper.Ok(result.Data)
-        //         : ResponseHelper.Error();
-        // }
-
-        // [HttpGet("{id}")]
-        // public async Task<IActionResult> GetListTask(ObjectId projectId, ObjectId id)
-        // {
-        //     var result = await _kanbanBoardService.GetListTask(projectId, id);
-
-        //     return result.Success
-        //         ? ResponseHelper.Ok(result.Data)
-        //         : ResponseHelper.Error();
-        // }
-
         [HttpPost]
         public async Task<IActionResult> CreateListTask(ObjectId projectId, ListTaskDTO listTaskDTO)
         {
@@ -64,16 +44,6 @@ namespace backend.WebApi.Controllers
                 ? ResponseHelper.Ok(result.Data)
                 : ResponseHelper.Error();
         }
-
-        // [HttpGet("{listTaskId}/kanbantasks")]
-        // public async Task<IActionResult> GetKanbanTasks(ObjectId projectId, ObjectId listTaskId)
-        // {
-        //     var result = await _kanbanBoardService.GetKanbanTasks(projectId, listTaskId);
-
-        //     return result.Success
-        //         ? ResponseHelper.Ok(result.Data)
-        //         : ResponseHelper.Error();
-        // }
 
         [HttpGet("{listTaskId}/kanbantasks/{kanbanTaskId}")]
         public async Task<IActionResult> GetKanbanTask(ObjectId projectId, ObjectId listTaskId, ObjectId kanbanTaskId)

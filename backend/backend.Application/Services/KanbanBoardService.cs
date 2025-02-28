@@ -20,36 +20,6 @@ namespace backend.Application.Services
         private readonly IKanbanBoardRepository _repository = repository;
         private readonly ILogger<KanbanBoardService> _logger = logger;
 
-        // public async Task<ServiceResult<List<ListTask>>> GetListTasks(ObjectId projectId)
-        // {
-        //     try
-        //     {
-        //         var listTasks = await _repository.GetAllListTasks(projectId);
-
-        //         return ServiceResult<List<ListTask>>.Ok(listTasks);
-        //     }
-        //     catch (Exception ex)
-        //     {
-        //         _logger.LogError(ex, "Error getting list tasks");
-        //         return ServiceResult<List<ListTask>>.Fail();
-        //     }
-        // }
-
-        // public async Task<ServiceResult<ListTask>> GetListTask(ObjectId projectId, ObjectId id)
-        // {
-        //     try
-        //     {
-        //         var listTask = await _repository.GetListTasks(projectId, id);
-
-        //         return ServiceResult<ListTask>.Ok(listTask);
-        //     }
-        //     catch (Exception ex)
-        //     {
-        //         _logger.LogError(ex, "Error getting list task");
-        //         return ServiceResult<ListTask>.Fail();
-        //     }
-        // }
-
         public async Task<ServiceResult<ListTask>> CreateListTask(ObjectId projectId, ListTaskDTO listTaskDTO)
         {
             try
@@ -109,21 +79,6 @@ namespace backend.Application.Services
                 return ServiceResult<string>.Fail();
             }
         }
-
-        // public async Task<ServiceResult<List<KanbanTask>>> GetKanbanTasks(ObjectId projectId, ObjectId listTaskId)
-        // {
-        //     try
-        //     {
-        //         var kanbanTasks = await _repository.GetAllKanbanTasks(projectId, listTaskId);
-
-        //         return ServiceResult<List<KanbanTask>>.Ok(kanbanTasks);
-        //     }
-        //     catch (Exception ex)
-        //     {
-        //         _logger.LogError(ex, "Error getting kanban tasks");
-        //         return ServiceResult<List<KanbanTask>>.Fail();
-        //     }
-        // }
 
         public async Task<ServiceResult<KanbanTask>> GetKanbanTask(ObjectId projectId, ObjectId listTaskId, ObjectId kanbanTaskId)
         {

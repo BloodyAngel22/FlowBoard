@@ -40,27 +40,6 @@ namespace backend.Infrastructure.Repositories
             await _context.Projects.ReplaceOneAsync(project => project.Id == projectId, project);
         }
 
-        public async Task<ListTask> GetListTasks(ObjectId projectId, ObjectId id)
-        {
-            var project = await _context.Projects
-                .Find(project => project.Id == projectId)
-                .FirstOrDefaultAsync() ?? throw new Exception("Project not found");
-
-            var listTask = project.ListTasks
-                .Find(listTask => listTask.Id == id) ?? throw new Exception("ListTask not found");
-
-            return listTask;
-        }
-
-        public async Task<List<ListTask>> GetAllListTasks(ObjectId projectId)
-        {
-            var project = await _context.Projects
-                .Find(project => project.Id == projectId)
-                .FirstOrDefaultAsync();
-
-            return project.ListTasks;
-        }
-
         public async Task UpdateListTasks(ObjectId projectId, ObjectId id, ListTask listTask)
         {
             var project = await _context.Projects
@@ -75,18 +54,6 @@ namespace backend.Infrastructure.Repositories
             listTaskToUpdate.IsFinished = listTask.IsFinished;
 
             await _context.Projects.ReplaceOneAsync(project => project.Id == projectId, project);
-        }
-
-        public async Task<List<KanbanTask>> GetAllKanbanTasks(ObjectId projectId, ObjectId listTaskId)
-        {
-            var project = await _context.Projects
-                .Find(project => project.Id == projectId)
-                .FirstOrDefaultAsync() ?? throw new Exception("Project not found");
-            
-            var listTask = project.ListTasks
-                .Find(listTask => listTask.Id == listTaskId) ?? throw new Exception("ListTask not found");
-            
-            return listTask.Tasks;
         }
 
         public async Task<KanbanTask> GetKanbanTask(ObjectId projectId, ObjectId listTaskId, ObjectId kanbanTaskId)
