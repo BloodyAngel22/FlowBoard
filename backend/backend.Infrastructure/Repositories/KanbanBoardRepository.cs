@@ -26,9 +26,18 @@ namespace backend.Infrastructure.Repositories
             return listTask;
         }
 
-        public Task DeleteListTasks(ObjectId projectId, ObjectId id)
+        public async Task DeleteListTasks(ObjectId projectId, ObjectId id)
         {
-            throw new NotImplementedException();
+            var project = await _context.Projects
+                .Find(project => project.Id == projectId)
+                .FirstOrDefaultAsync() ?? throw new Exception("Project not found");
+
+            var listTask = project.ListTasks
+                .Find(listTask => listTask.Id == id) ?? throw new Exception("ListTask not found");
+
+            project.ListTasks.Remove(listTask);
+
+            await _context.Projects.ReplaceOneAsync(project => project.Id == projectId, project);
         }
 
         public async Task<ListTask> GetListTasks(ObjectId projectId, ObjectId id)
@@ -36,7 +45,7 @@ namespace backend.Infrastructure.Repositories
             var project = await _context.Projects
                 .Find(project => project.Id == projectId)
                 .FirstOrDefaultAsync() ?? throw new Exception("Project not found");
-                
+
             var listTask = project.ListTasks
                 .Find(listTask => listTask.Id == id) ?? throw new Exception("ListTask not found");
 
@@ -52,9 +61,101 @@ namespace backend.Infrastructure.Repositories
             return project.ListTasks;
         }
 
-        public Task UpdateListTasks(ObjectId projectId, ObjectId id, ListTask listTask)
+        public async Task UpdateListTasks(ObjectId projectId, ObjectId id, ListTask listTask)
         {
-            throw new NotImplementedException();
+            var project = await _context.Projects
+                .Find(project => project.Id == projectId)
+                .FirstOrDefaultAsync() ?? throw new Exception("Project not found");
+
+            var listTaskToUpdate = project.ListTasks
+                .Find(listTask => listTask.Id == id) ?? throw new Exception("ListTask not found");
+
+            listTaskToUpdate.Name = listTask.Name;
+            listTaskToUpdate.Position = listTask.Position;
+            listTaskToUpdate.IsFinished = listTask.IsFinished;
+
+            await _context.Projects.ReplaceOneAsync(project => project.Id == projectId, project);
+        }
+
+        public async Task<List<KanbanTask>> GetAllKanbanTasks(ObjectId projectId, ObjectId listTaskId)
+        {
+            var project = await _context.Projects
+                .Find(project => project.Id == projectId)
+                .FirstOrDefaultAsync() ?? throw new Exception("Project not found");
+            
+            var listTask = project.ListTasks
+                .Find(listTask => listTask.Id == listTaskId) ?? throw new Exception("ListTask not found");
+            
+            return listTask.Tasks;
+        }
+
+        public async Task<KanbanTask> GetKanbanTask(ObjectId projectId, ObjectId listTaskId, ObjectId kanbanTaskId)
+        {
+            var project = await _context.Projects
+                .Find(project => project.Id == projectId)
+                .FirstOrDefaultAsync() ?? throw new Exception("Project not found");
+
+            var listTask = project.ListTasks
+                .Find(listTask => listTask.Id == listTaskId) ?? throw new Exception("ListTask not found");
+                
+            var kanbanTask = listTask.Tasks
+                .Find(kanbanTask => kanbanTask.Id == kanbanTaskId) ?? throw new Exception("KanbanTask not found");
+            
+            return kanbanTask;
+        }
+
+        public async Task CreateKanbanTask(ObjectId projectId, ObjectId listTaskId, KanbanTask kanbanTask)
+        {
+            var project = await _context.Projects
+                .Find(project => project.Id == projectId)
+                .FirstOrDefaultAsync() ?? throw new Exception("Project not found");
+
+            var listTask = project.ListTasks
+                .Find(listTask => listTask.Id == listTaskId) ?? throw new Exception("ListTask not found");
+
+            listTask.Tasks.Add(kanbanTask);
+
+            await _context.Projects.ReplaceOneAsync(project => project.Id == projectId, project);
+        }
+
+        public async Task UpdateKanbanTask(ObjectId projectId, ObjectId listTaskId, ObjectId kanbanTaskId, KanbanTask kanbanTask)
+        {
+            var project = await _context.Projects
+                .Find(project => project.Id == projectId)
+                .FirstOrDefaultAsync() ?? throw new Exception("Project not found");
+
+            var listTask = project.ListTasks
+                .Find(listTask => listTask.Id == listTaskId) ?? throw new Exception("ListTask not found");
+
+            var kanbanTaskToUpdate = listTask.Tasks
+                .Find(kanbanTask => kanbanTask.Id == kanbanTaskId) ?? throw new Exception("KanbanTask not found");
+
+            kanbanTaskToUpdate.Name = kanbanTask.Name;
+            kanbanTaskToUpdate.Position = kanbanTask.Position;
+            kanbanTaskToUpdate.Description = kanbanTask.Description;
+            kanbanTaskToUpdate.StartDate = kanbanTask.StartDate;
+            kanbanTaskToUpdate.EndDate = kanbanTask.EndDate;
+            kanbanTaskToUpdate.CategoryId = kanbanTask.CategoryId;
+            kanbanTaskToUpdate.Priority = kanbanTask.Priority;
+
+            await _context.Projects.ReplaceOneAsync(project => project.Id == projectId, project);
+        }
+
+        public async Task DeleteKanbanTask(ObjectId projectId, ObjectId listTaskId, ObjectId kanbanTaskId)
+        {
+            var project = await _context.Projects
+                .Find(project => project.Id == projectId)
+                .FirstOrDefaultAsync() ?? throw new Exception("Project not found");
+
+            var listTask = project.ListTasks
+                .Find(listTask => listTask.Id == listTaskId) ?? throw new Exception("ListTask not found");
+
+            var kanbanTaskToDelete = listTask.Tasks
+                .Find(kanbanTask => kanbanTask.Id == kanbanTaskId) ?? throw new Exception("KanbanTask not found");
+
+            listTask.Tasks.Remove(kanbanTaskToDelete);
+
+            await _context.Projects.ReplaceOneAsync(project => project.Id == projectId, project);
         }
     }
 }

@@ -18,35 +18,35 @@ namespace backend.Infrastructure.Repositories
             _context = context;
         }
 
-        public async Task<Project> Create(Project project)
+        public async Task<Project> CreateProject(Project project)
         {
             await _context.Projects.InsertOneAsync(project);
 
             return project;
         }
 
-        public async Task Delete(ObjectId id)
+        public async Task DeleteProject(ObjectId id)
         {
             var project = await _context.Projects.Find(project => project.Id == id).FirstOrDefaultAsync() ?? throw new Exception("Project not found");
 
             await _context.Projects.DeleteOneAsync(project => project.Id == id);
         }
 
-        public async Task<Project?> Get(ObjectId id)
+        public async Task<Project?> GetProject(ObjectId id)
         {
             var project = await _context.Projects.Find(project => project.Id == id).FirstOrDefaultAsync();
 
             return project;
         }
 
-        public async Task<List<Project>> GetAll()
+        public async Task<List<Project>> GetAllProjects()
         {
             var projects = await _context.Projects.Find(_ => true).ToListAsync();
 
             return projects;
         }
 
-        public async Task Update(ObjectId id, Project project)
+        public async Task UpdateProject(ObjectId id, Project project)
         {
             var existingProject = await _context.Projects.Find(project => project.Id == id).FirstOrDefaultAsync() ?? throw new Exception("Project not found");
 

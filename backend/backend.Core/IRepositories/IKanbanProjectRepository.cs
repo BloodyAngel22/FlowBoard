@@ -9,10 +9,10 @@ namespace backend.Core.IRepositories
 {
     public interface IKanbanProjectRepository
     {
-        Task<List<Project>> GetAll();
-        Task<Project?> Get(ObjectId id);
-        Task<Project> Create(Project project);
-        Task Update(ObjectId id, Project project);
-        Task Delete(ObjectId id);
+        Task<List<Project>> GetAllProjects();
+        Task<Project?> GetProject(ObjectId id);
+        Task<Project> CreateProject(Project project);
+        Task UpdateProject(ObjectId id, Project project);
+        Task DeleteProject(ObjectId id);
     }
 }

@@ -20,35 +20,35 @@ namespace backend.Application.Services
         private readonly IKanbanBoardRepository _repository = repository;
         private readonly ILogger<KanbanBoardService> _logger = logger;
 
-        public async Task<ServiceResult<List<ListTask>>> GetListTasks(ObjectId projectId)
-        {
-            try
-            {
-                var listTasks = await _repository.GetAllListTasks(projectId);
+        // public async Task<ServiceResult<List<ListTask>>> GetListTasks(ObjectId projectId)
+        // {
+        //     try
+        //     {
+        //         var listTasks = await _repository.GetAllListTasks(projectId);
 
-                return ServiceResult<List<ListTask>>.Ok(listTasks);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error getting list tasks");
-                return ServiceResult<List<ListTask>>.Fail();
-            }
-        }
+        //         return ServiceResult<List<ListTask>>.Ok(listTasks);
+        //     }
+        //     catch (Exception ex)
+        //     {
+        //         _logger.LogError(ex, "Error getting list tasks");
+        //         return ServiceResult<List<ListTask>>.Fail();
+        //     }
+        // }
 
-        public async Task<ServiceResult<ListTask>> GetListTask(ObjectId projectId, ObjectId id)
-        {
-            try
-            {
-                var listTask = await _repository.GetListTasks(projectId, id);
+        // public async Task<ServiceResult<ListTask>> GetListTask(ObjectId projectId, ObjectId id)
+        // {
+        //     try
+        //     {
+        //         var listTask = await _repository.GetListTasks(projectId, id);
 
-                return ServiceResult<ListTask>.Ok(listTask);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error getting list task");
-                return ServiceResult<ListTask>.Fail();
-            }
-        }
+        //         return ServiceResult<ListTask>.Ok(listTask);
+        //     }
+        //     catch (Exception ex)
+        //     {
+        //         _logger.LogError(ex, "Error getting list task");
+        //         return ServiceResult<ListTask>.Fail();
+        //     }
+        // }
 
         public async Task<ServiceResult<ListTask>> CreateListTask(ObjectId projectId, ListTaskDTO listTaskDTO)
         {
@@ -69,6 +69,142 @@ namespace backend.Application.Services
             {
                 _logger.LogError(ex, "Error creating list task");
                 return ServiceResult<ListTask>.Fail();
+            }
+        }
+
+        public async Task<ServiceResult<string>> UpdateListTask(ObjectId projectId, ObjectId id, ListTaskDTO listTaskDTO)
+        {
+            try
+            {
+                var listTask = new ListTask
+                {
+                    Id = id,
+                    Name = listTaskDTO.Name,
+                    Position = listTaskDTO.Position,
+                    IsFinished = listTaskDTO.IsFinished
+                };
+
+                await _repository.UpdateListTasks(projectId, id, listTask);
+
+                return ServiceResult<string>.Ok("List task updated");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error updating list task");
+                return ServiceResult<string>.Fail();
+            }
+        }
+
+        public async Task<ServiceResult<string>> DeleteListTask(ObjectId projectId, ObjectId id)
+        {
+            try
+            {
+                await _repository.DeleteListTasks(projectId, id);
+
+                return ServiceResult<string>.Ok("List task deleted");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error deleting list task");
+                return ServiceResult<string>.Fail();
+            }
+        }
+
+        // public async Task<ServiceResult<List<KanbanTask>>> GetKanbanTasks(ObjectId projectId, ObjectId listTaskId)
+        // {
+        //     try
+        //     {
+        //         var kanbanTasks = await _repository.GetAllKanbanTasks(projectId, listTaskId);
+
+        //         return ServiceResult<List<KanbanTask>>.Ok(kanbanTasks);
+        //     }
+        //     catch (Exception ex)
+        //     {
+        //         _logger.LogError(ex, "Error getting kanban tasks");
+        //         return ServiceResult<List<KanbanTask>>.Fail();
+        //     }
+        // }
+
+        public async Task<ServiceResult<KanbanTask>> GetKanbanTask(ObjectId projectId, ObjectId listTaskId, ObjectId kanbanTaskId)
+        {
+            try
+            {
+                var kanbanTask = await _repository.GetKanbanTask(projectId, listTaskId, kanbanTaskId);
+
+                return ServiceResult<KanbanTask>.Ok(kanbanTask);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting kanban task");
+                return ServiceResult<KanbanTask>.Fail();
+            }
+        }
+
+        public async Task<ServiceResult<string>> CreateKanbanTask(ObjectId projectId, ObjectId listTaskId, KanbanTaskDTO kanbanTaskDTO)
+        {
+            try
+            {
+                var kanbanTask = new KanbanTask
+                {
+                    Name = kanbanTaskDTO.Name,
+                    Priority = kanbanTaskDTO.Priority,
+                    Position = kanbanTaskDTO.Position,
+                    Description = kanbanTaskDTO.Description,
+                    StartDate = kanbanTaskDTO.StartDate,
+                    EndDate = kanbanTaskDTO.EndDate,
+                    CategoryId = kanbanTaskDTO.CategoryId
+                };
+
+                await _repository.CreateKanbanTask(projectId, listTaskId, kanbanTask);
+
+                return ServiceResult<string>.Ok("Kanban task created");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error creating kanban task");
+                return ServiceResult<string>.Fail();
+            }
+        }
+
+        public async Task<ServiceResult<string>> UpdateKanbanTask(ObjectId projectId, ObjectId listTaskId, ObjectId kanbanTaskId, KanbanTaskDTO kanbanTaskDTO)
+        {
+            try
+            {
+                var kanbanTask = new KanbanTask
+                {
+                    Id = kanbanTaskId,
+                    Name = kanbanTaskDTO.Name,
+                    Priority = kanbanTaskDTO.Priority,
+                    Position = kanbanTaskDTO.Position,
+                    Description = kanbanTaskDTO.Description,
+                    StartDate = kanbanTaskDTO.StartDate,
+                    EndDate = kanbanTaskDTO.EndDate,
+                    CategoryId = kanbanTaskDTO.CategoryId
+                };
+
+                await _repository.UpdateKanbanTask(projectId, listTaskId, kanbanTaskId, kanbanTask);
+
+                return ServiceResult<string>.Ok("Kanban task updated");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error updating kanban task");
+                return ServiceResult<string>.Fail();
+            }
+        }
+
+        public async Task<ServiceResult<string>> DeleteKanbanTask(ObjectId projectId, ObjectId listTaskId, ObjectId kanbanTaskId)
+        {
+            try
+            {
+                await _repository.DeleteKanbanTask(projectId, listTaskId, kanbanTaskId);
+
+                return ServiceResult<string>.Ok("Kanban task deleted");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error deleting kanban task");
+                return ServiceResult<string>.Fail();
             }
         }
     }

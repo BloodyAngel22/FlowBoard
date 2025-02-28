@@ -21,16 +21,23 @@ namespace backend.Application.Services
         private readonly IKanbanProjectRepository _kanbanProjectRepository = kanbanProjectRepository;
         private readonly ILogger<KanbanProjectsService> _logger = logger;
 
-        public async Task<ServiceResult<List<Project>>> GetAllProjects()
+        public async Task<ServiceResult<List<ProjectDTOWithoutListTasks>>> GetAllProjects()
         {
-            var projects = await _kanbanProjectRepository.GetAll();
+            var projects = await _kanbanProjectRepository.GetAllProjects();
 
-            return ServiceResult<List<Project>>.Ok(projects);
+            var projectsWithoutListTasks = projects.Select(project => new ProjectDTOWithoutListTasks
+            {
+                Id = project.Id,
+                Name = project.Name,
+                Description = project.Description
+            }).ToList();
+
+            return ServiceResult<List<ProjectDTOWithoutListTasks>>.Ok(projectsWithoutListTasks);
         }
 
         public async Task<ServiceResult<Project>> GetProject(ObjectId id)
         {
-            var project = await _kanbanProjectRepository.Get(id);
+            var project = await _kanbanProjectRepository.GetProject(id);
 
             if (project == null)
             {
@@ -51,7 +58,7 @@ namespace backend.Application.Services
 
             try
             {
-                var createdProject = await _kanbanProjectRepository.Create(newProject);
+                var createdProject = await _kanbanProjectRepository.CreateProject(newProject);
 
                 return ServiceResult<Project>.Ok(createdProject);
             }
@@ -73,7 +80,7 @@ namespace backend.Application.Services
 
             try
             {
-                await _kanbanProjectRepository.Update(id, newProject);
+                await _kanbanProjectRepository.UpdateProject(id, newProject);
 
                 return ServiceResult<string>.Ok("Project updated successfully");
             }
@@ -88,7 +95,7 @@ namespace backend.Application.Services
         {
             try
             {
-                await _kanbanProjectRepository.Delete(id);
+                await _kanbanProjectRepository.DeleteProject(id);
 
                 return ServiceResult<string>.Ok("Project deleted successfully");
             }
