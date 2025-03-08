@@ -36,6 +36,8 @@ namespace backend.Infrastructure.Repositories
         {
             var project = await _context.Projects.Find(project => project.Id == id).FirstOrDefaultAsync();
 
+            //TODO: надо сортировать списки и задачи в списках по позициям.
+
             return project;
         }
 
