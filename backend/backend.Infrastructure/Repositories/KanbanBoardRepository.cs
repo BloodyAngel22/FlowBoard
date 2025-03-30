@@ -13,6 +13,18 @@ namespace backend.Infrastructure.Repositories
     {
         private readonly AppDbContext _context = context;
 
+        public async Task<ListTask> GetListInfo(ObjectId projectId, ObjectId id)
+        {
+            var project = await _context.Projects
+                .Find(project => project.Id == projectId)
+                .FirstOrDefaultAsync() ?? throw new Exception("Project not found");
+
+            var listTask = project.ListTasks
+                .Find(listTask => listTask.Id == id) ?? throw new Exception("ListTask not found");
+
+            return listTask;
+        }
+
         public async Task<ListTask> CreateListTasks(ObjectId projectId, ListTask listTask)
         {
             var project = await _context.Projects

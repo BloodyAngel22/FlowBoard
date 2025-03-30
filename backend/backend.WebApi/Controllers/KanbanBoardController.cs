@@ -15,6 +15,16 @@ namespace backend.WebApi.Controllers
     {
         private readonly KanbanBoardService _kanbanBoardService = kanbanBoardService;
 
+        [HttpGet("{columnId}")]
+        public async Task<IActionResult> GetListInfo(ObjectId projectId, ObjectId columnId)
+        {
+            var result = await _kanbanBoardService.GetListInfo(projectId, columnId);
+
+            return result.Success
+                ? ResponseHelper.Ok(result.Data)
+                : ResponseHelper.Error();
+        }
+
         [HttpPost]
         public async Task<IActionResult> CreateListTask(ObjectId projectId, ListTaskDTO listTaskDTO)
         {

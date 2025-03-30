@@ -9,6 +9,7 @@ namespace backend.Core.IRepositories
 {
     public interface IKanbanBoardRepository
     {
+        Task<ListTask> GetListInfo(ObjectId projectId, ObjectId id);
         Task<ListTask> CreateListTasks(ObjectId projectId, ListTask listTask);
         Task UpdateListTasks(ObjectId projectId, ObjectId id, ListTask listTask);
         Task DeleteListTasks(ObjectId projectId, ObjectId id);

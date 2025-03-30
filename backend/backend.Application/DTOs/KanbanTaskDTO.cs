@@ -19,6 +19,7 @@ namespace backend.Application.DTOs
         public string? Description { get; set; }
         public DateTime? StartDate { get; set; }
         public DateTime? EndDate { get; set; }
-        public int? CategoryId { get; set; }
+        [JsonConverter(typeof(ObjectIdToStringConverter))]
+        public ObjectId? CategoryId { get; set; }
     }
 }

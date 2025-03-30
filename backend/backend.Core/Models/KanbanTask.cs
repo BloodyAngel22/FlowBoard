@@ -34,5 +34,6 @@ public class KanbanTask
     public DateTime? EndDate { get; set; }
     // Категория
     [BsonIgnoreIfNull]
-    public int? CategoryId { get; set; }
+    [JsonConverter(typeof(ObjectIdToStringConverter))]
+    public ObjectId? CategoryId { get; set; }
 }

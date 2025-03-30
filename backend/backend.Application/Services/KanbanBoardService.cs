@@ -20,7 +20,30 @@ namespace backend.Application.Services
         private readonly IKanbanBoardRepository _repository = repository;
         private readonly ILogger<KanbanBoardService> _logger = logger;
 
-        public async Task<ServiceResult<ListTask>> CreateListTask(ObjectId projectId, ListTaskDTO listTaskDTO)
+        public async Task<ServiceResult<ListTaskResponseWithoutTasks>> GetListInfo(ObjectId projectId, ObjectId id)
+        {
+            try
+            {
+                var listTask = await _repository.GetListInfo(projectId, id);
+
+                var listTaskDTOWithoutTasks = new ListTaskResponseWithoutTasks
+                {
+                    Id = listTask.Id,
+                    Name = listTask.Name,
+                    Position = listTask.Position,
+                    IsFinished = listTask.IsFinished
+                };
+
+                return ServiceResult<ListTaskResponseWithoutTasks>.Ok(listTaskDTOWithoutTasks);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting list task");
+                return ServiceResult<ListTaskResponseWithoutTasks>.Fail();
+            }
+        }
+
+        public async Task<ServiceResult<string>> CreateListTask(ObjectId projectId, ListTaskDTO listTaskDTO)
         {
             try
             {
@@ -33,12 +56,12 @@ namespace backend.Application.Services
 
                 var createdListTask = await _repository.CreateListTasks(projectId, listTask);
 
-                return ServiceResult<ListTask>.Ok(createdListTask);
+                return ServiceResult<string>.Ok("List task created");
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error creating list task");
-                return ServiceResult<ListTask>.Fail();
+                return ServiceResult<string>.Fail();
             }
         }
 

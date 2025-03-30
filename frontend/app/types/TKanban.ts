@@ -2,6 +2,7 @@ import {
   ControlledBoardProps,
   OnDragEndNotification,
 } from "@caldwell619/react-kanban/dist/features/board/components/Controlled";
+import { SharedProps } from "@caldwell619/react-kanban/dist/features/board/components/shared";
 import {
   Card,
   Column,
@@ -17,8 +18,8 @@ export interface MyCard extends Card {
   metadata: {
     priority: number;
     position: number;
-    startDate: Date | undefined;
-    endDate: Date | undefined;
+    startDate: Date | null | undefined;
+    endDate: Date | null | undefined;
     categoryId: string | undefined;
     isFinished: boolean;
   };
