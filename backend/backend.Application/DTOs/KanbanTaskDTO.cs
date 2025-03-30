@@ -22,4 +22,13 @@ namespace backend.Application.DTOs
         [JsonConverter(typeof(ObjectIdToStringConverter))]
         public ObjectId? CategoryId { get; set; }
     }
+
+    public class KanbanTaskMoveEventDTO
+    {
+        public required string TaskId { get; set; }
+        public required int FromPosition { get; set; }
+        public required string FromColumnId { get; set; }
+        public required int ToPosition { get; set; }
+        public required string ToColumnId { get; set; }
+    }
 }

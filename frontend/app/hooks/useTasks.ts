@@ -1,5 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
+  ICardMoveRequest,
+  ICardMoveResponse,
   IKanbanTaskModifyRequest,
   IKanbanTaskModifyResponse,
   IKanbanTaskResponse,
@@ -85,3 +87,26 @@ export const useDeleteTask = (projectId: string, listTaskId: string, kanbanTaskI
     }
   })
 }
+
+export const useMoveTask = (projectId: string) => {
+  const queryClient = useQueryClient();
+
+  return useMutation<ICardMoveResponse, Error, ICardMoveRequest>({
+    mutationFn: (cardMove: ICardMoveRequest) => {
+      if (!cardMove.fromColumnId || !cardMove.toColumnId) {
+        console.error("fromColumnId or toColumnId is missing:", { cardMove });
+        throw new Error("fromColumnId or toColumnId is missing");
+      }
+      return tasksApiInstance.moveTask(projectId, cardMove)
+    },
+    onSuccess: (response) => {
+      // queryClient.invalidateQueries({
+      //   queryKey: ["project", projectId],
+      // });
+      // console.log(response);
+    },
+    onError: (error) => {
+      console.error(error);
+    },
+  });
+};

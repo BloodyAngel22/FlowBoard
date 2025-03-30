@@ -37,6 +37,12 @@ namespace backend.Infrastructure.Repositories
             var project = await _context.Projects.Find(project => project.Id == id).FirstOrDefaultAsync();
 
             //TODO: надо сортировать списки и задачи в списках по позициям.
+            project.ListTasks.Sort((x, y) => x.Position.CompareTo(y.Position));
+
+            foreach (var listTask in project.ListTasks)
+            {
+                listTask.Tasks.Sort((x, y) => x.Position.CompareTo(y.Position));
+            }
 
             return project;
         }

@@ -24,7 +24,7 @@ namespace backend.Application.Services
         {
             try
             {
-                var listTask = await _repository.GetListInfo(projectId, id);
+                var listTask = await _repository.GetListTaskById(projectId, id);
 
                 var listTaskDTOWithoutTasks = new ListTaskResponseWithoutTasks
                 {
@@ -182,6 +182,78 @@ namespace backend.Application.Services
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error deleting kanban task");
+                return ServiceResult<string>.Fail();
+            }
+        }
+
+        public async Task<ServiceResult<string>> MoveKanbanTask(ObjectId projectId, KanbanTaskMoveEventDTO moveTaskEventDTO)
+        {
+            try
+            {
+                var fromColumnId = ObjectId.Parse(moveTaskEventDTO.FromColumnId);
+                var toColumnId = ObjectId.Parse(moveTaskEventDTO.ToColumnId);
+                var taskId = ObjectId.Parse(moveTaskEventDTO.TaskId);
+
+                if (moveTaskEventDTO.FromColumnId == moveTaskEventDTO.ToColumnId)
+                {
+                    var tasksInColumn = await _repository.GetListTaskById(projectId, fromColumnId);
+
+                    if (moveTaskEventDTO.FromPosition > moveTaskEventDTO.ToPosition)
+                    {
+                        var tasksToShift = tasksInColumn.Tasks.Where(task => task.Position >= moveTaskEventDTO.ToPosition && task.Position < moveTaskEventDTO.FromPosition).ToList();
+
+                        foreach (var task in tasksToShift)
+                        {
+                            await _repository.ChangePositionToTask(projectId, fromColumnId, task.Id, task.Position + 1);
+                        }
+                    }
+                    else if (moveTaskEventDTO.FromPosition < moveTaskEventDTO.ToPosition)
+                    {
+                        var tasksToShift = tasksInColumn.Tasks.Where(task => task.Position > moveTaskEventDTO.FromPosition && task.Position <= moveTaskEventDTO.ToPosition).ToList();
+
+                        foreach (var task in tasksToShift)
+                        {
+                            await _repository.ChangePositionToTask(projectId, fromColumnId, task.Id, task.Position - 1);
+                        }
+                    }
+
+                    await _repository.ChangePositionToTask(projectId, fromColumnId, taskId, moveTaskEventDTO.ToPosition);
+
+                    return ServiceResult<string>.Ok("Kanban task moved in the same column");
+                }
+                else
+                {
+                    var tasksInFromColumn = await _repository.GetListTaskById(projectId, fromColumnId);
+
+                    var tasksToShiftFrom = tasksInFromColumn.Tasks.Where(task =>
+                        task.Position > moveTaskEventDTO.FromPosition
+                        ).ToList();
+
+                    foreach (var task in tasksToShiftFrom)
+                    {
+                        await _repository.ChangePositionToTask(projectId, fromColumnId, task.Id, task.Position - 1);
+                    }
+
+                    var tasksInToColumn = await _repository.GetListTaskById(projectId, toColumnId);
+
+                    var tasksToShiftTo = tasksInToColumn.Tasks.Where(task =>
+                        task.Position >= moveTaskEventDTO.ToPosition
+                        ).ToList();
+
+                    foreach (var task in tasksToShiftTo)
+                    {
+                        await _repository.ChangePositionToTask(projectId, toColumnId, task.Id, task.Position + 1);
+                    }
+
+                    //FIXME: неправильно работает. Заменить на ChangePositionToTaskToOtherColumn
+                    await _repository.ChangePositionToTaskInOtherColumn(projectId, fromColumnId, toColumnId, taskId, moveTaskEventDTO.ToPosition);
+
+                    return ServiceResult<string>.Ok("Kanban task moved to another column");
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error moving kanban task");
                 return ServiceResult<string>.Fail();
             }
         }

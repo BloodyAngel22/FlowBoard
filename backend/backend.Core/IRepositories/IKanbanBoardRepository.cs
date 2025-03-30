@@ -9,7 +9,6 @@ namespace backend.Core.IRepositories
 {
     public interface IKanbanBoardRepository
     {
-        Task<ListTask> GetListInfo(ObjectId projectId, ObjectId id);
         Task<ListTask> CreateListTasks(ObjectId projectId, ListTask listTask);
         Task UpdateListTasks(ObjectId projectId, ObjectId id, ListTask listTask);
         Task DeleteListTasks(ObjectId projectId, ObjectId id);
@@ -18,5 +17,11 @@ namespace backend.Core.IRepositories
         Task CreateKanbanTask(ObjectId projectId, ObjectId listTaskId, KanbanTask kanbanTask);
         Task UpdateKanbanTask(ObjectId projectId, ObjectId listTaskId, ObjectId kanbanTaskId, KanbanTask kanbanTask);
         Task DeleteKanbanTask(ObjectId projectId, ObjectId listTaskId, ObjectId kanbanTaskId);
+        // Task MoveKanbanTask(ObjectId projectId, ObjectId listTaskId, ObjectId kanbanTaskId, int position);
+        Task<KanbanTask> GetKanbanTaskByPosition(ObjectId projectId, ObjectId listTaskId, int position);
+        Task ChangePositionToTask(ObjectId projectId, ObjectId listTaskId, ObjectId kanbanTaskId, int position);
+        Task ChangePositionToTaskInOtherColumn(ObjectId projectId, ObjectId currentListTaskId, ObjectId newListTaskId, ObjectId kanbanTaskId, int position);
+
+        Task<ListTask> GetListTaskById(ObjectId projectId, ObjectId id);
     }
 }

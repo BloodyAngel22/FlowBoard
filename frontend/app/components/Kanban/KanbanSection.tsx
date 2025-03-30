@@ -21,6 +21,9 @@ import NewColumnButton from "./NewColumnButton";
 import { IColumnForm } from "@/app/types/IColumn.form";
 import CardDialog from "./CardDialog";
 import ColumnDialog from "./ColumnDialog";
+import { useMoveTask } from "@/app/hooks/useTasks";
+import { useProjectId } from "@/app/stores/useProjectId";
+import { ICardMoveRequest } from "@/app/types/IKanbanTask";
 
 interface KanbanSectionProps {
   boardData: IProjectFull;
@@ -38,6 +41,10 @@ export default function KanbanSection({ boardData }: KanbanSectionProps) {
 
   const [selectedColumn, setSelectedColumn] = useState<MyColumn | null>(null);
   const [isColumnDialogOpen, setIsColumnDialogOpen] = useState(false);
+
+  const { projectId } = useProjectId();
+
+  const { mutate: moveTask, isPending: isMoveTaskPending } = useMoveTask(projectId);
 
   useEffect(() => {
     const transformedBoard = transformToKanbanBoard(boardData);
@@ -73,10 +80,30 @@ export default function KanbanSection({ boardData }: KanbanSectionProps) {
     source,
     destination
   ) => {
+    console.log("Card", _card.id, "was moved from", source, "to", destination);
     setBoard((currentBoard) => {
       const updatedBoard = moveCard(currentBoard, source, destination);
       return updatedBoard;
     });
+
+    const moveData: ICardMoveRequest = {
+      taskId: String(_card.id),
+      fromPosition: source?.fromPosition || 0,
+      toPosition: destination?.toPosition || 0,
+      fromColumnId: String(source?.fromColumnId),
+      toColumnId: String(destination?.toColumnId),
+    };
+
+    moveTask(moveData, {
+      onError: (error) => {
+        console.error(error);
+
+        setBoard((currentBoard) => {
+          const revertedBoard = moveCard(currentBoard, source, destination);
+          return revertedBoard;
+        });
+      }
+    })
   };
 
   const handleColumnMove: MyControlledBoardProps["onColumnDragEnd"] = (
@@ -126,7 +153,10 @@ export default function KanbanSection({ boardData }: KanbanSectionProps) {
           onCardDragEnd={handleCardMove}
           onColumnDragEnd={handleColumnMove}
           renderColumnHeader={(column: MyColumn) => (
-            <CustomColumnHeader column={column} handleColumnClick={handleColumnClick}/>
+            <CustomColumnHeader
+              column={column}
+              handleColumnClick={handleColumnClick}
+            />
           )}
           renderCard={(card: MyCard) => (
             <CustomCard

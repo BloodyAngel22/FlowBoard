@@ -28,3 +28,16 @@ export interface IKanbanTaskModifyRequest {
   endDate?: Date | null;
   categoryId?: string | null;
 }
+
+export interface ICardMoveRequest {
+  taskId: string;
+  fromPosition: number;
+  fromColumnId: string;
+  toPosition: number;
+  toColumnId: string;
+}
+
+export interface ICardMoveResponse {
+  success: boolean;
+  data: string;
+}
