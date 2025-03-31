@@ -18,6 +18,7 @@ import FormInput from "../Forms/FormInput";
 import { useDeleteTask, useTask, useUpdateTask } from "@/app/hooks/useTasks";
 import { IKanbanTaskModifyRequest, IKanbanTaskModifyResponse } from "@/app/types/IKanbanTask";
 import AlertDelete from "./AlertDelete";
+import { Loader2 } from "lucide-react";
 
 interface CardDialogProps {
   cardId: string | undefined;
@@ -59,22 +60,31 @@ function CardDialogContent({ projectId, cardId, columnId, onClose }: { projectId
 
   if (isLoading) {
     return (
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>Loading...</DialogTitle>
         </DialogHeader>
-        <div>Loading...</div>
+        <div className="flex h-40 w-full items-center justify-center">
+          <Loader2 className="h-8 w-8 animate-spin text-zinc-500 dark:text-zinc-400" />
+        </div>
       </DialogContent>
     );
   }
 
   if (isError) {
     return (
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Error</DialogTitle>
+          <DialogTitle className="text-zinc-800 dark:text-zinc-100">
+            Ошибка
+          </DialogTitle>
         </DialogHeader>
-        <div>Error: {error?.message}</div>
+        <div className="mt-4 rounded border border-red-200 bg-red-50 p-3 text-red-600 dark:border-red-900 dark:bg-red-950/30 dark:text-red-400">
+          {error?.message || "Произошла ошибка при загрузке данных задачи"}
+        </div>
+        <DialogFooter className="mt-4">
+          <Button onClick={onClose}>Закрыть</Button>
+        </DialogFooter>
       </DialogContent>
     );
   }
@@ -162,11 +172,13 @@ function CardDialogContent({ projectId, cardId, columnId, onClose }: { projectId
             </div>
           </div>
           {isUpdatingError && (
-            <p className="text-red-500">
-              Ошибка обновления: {updatingError?.message}
-            </p>
+            <div className="mb-4 rounded border border-red-200 bg-red-50 p-2 text-red-600 dark:border-red-900 dark:bg-red-950/30 dark:text-red-400">
+              Ошибка обновления:{" "}
+              {updatingError?.message ||
+                "Произошла ошибка при обновлении задачи"}
+            </div>
           )}
-          <DialogFooter>
+          <DialogFooter className="gap-2">
             <Button onClick={onClose} disabled={isUpdating}>
               Закрыть
             </Button>
@@ -179,7 +191,10 @@ function CardDialogContent({ projectId, cardId, columnId, onClose }: { projectId
               error={deletingError}
               onSuccess={onClose}
             />
-            <Button type="submit" disabled={!isValid || isUpdating}>
+            <Button
+              type="submit"
+              disabled={!isValid || isUpdating || isDeleting}
+            >
               {isUpdating ? "Сохранение..." : "Сохранить"}
             </Button>
           </DialogFooter>

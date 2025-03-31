@@ -1,12 +1,10 @@
-import Navigation from "../Navigation";
-import NewProjectSection from "./NewProjectSection";
 import ProjectsTable from "./ProjectsTable";
+import ProjectsHeader from "./ProjectsHeader";
 
 export default function ProjectsPage() {
   return (
     <>
-      <Navigation />
-      <NewProjectSection />
+      <ProjectsHeader />
       <ProjectsTable />
     </>
   );

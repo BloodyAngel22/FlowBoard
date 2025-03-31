@@ -18,7 +18,6 @@ import CustomColumnHeader from "./CustomColumnHeader";
 import CustomCard from "./CustomCard";
 import NewTaskButton from "./NewTaskButton";
 import NewColumnButton from "./NewColumnButton";
-import { IColumnForm } from "@/app/types/IColumn.form";
 import CardDialog from "./CardDialog";
 import ColumnDialog from "./ColumnDialog";
 import { useMoveTask } from "@/app/hooks/useTasks";
@@ -26,6 +25,7 @@ import { useProjectId } from "@/app/stores/useProjectId";
 import { ICardMoveRequest } from "@/app/types/IKanbanTask";
 import { IColumnMoveRequest } from "@/app/types/IColumn";
 import { useMoveColumn } from "@/app/hooks/useColumns";
+import { useKanbanButton } from "@/app/stores/useKanbanButton";
 
 interface KanbanSectionProps {
   boardData: IProjectFull;
@@ -46,8 +46,10 @@ export default function KanbanSection({ boardData }: KanbanSectionProps) {
 
   const { projectId } = useProjectId();
 
-  const { mutate: moveTask, isPending: isMoveTaskPending } = useMoveTask(projectId);
-  const { mutate: moveColumnM, isPending: isMoveColumnPending } = useMoveColumn(projectId);
+  const { mutate: moveTask } = useMoveTask(projectId);
+  const { mutate: moveColumnM } = useMoveColumn(projectId);
+
+  const { setNewColumnButton, setNewTaskButton } = useKanbanButton();
 
   useEffect(() => {
     const transformedBoard = transformToKanbanBoard(boardData);
@@ -59,7 +61,7 @@ export default function KanbanSection({ boardData }: KanbanSectionProps) {
   );
 
   const lastColumnIndex = board.columns.length - 1;
-
+ 
   const getMaxPosition = (): number => {
     if (!mainColumn || !mainColumn.cards || mainColumn.cards.length === 0) {
       return -1;
@@ -68,6 +70,22 @@ export default function KanbanSection({ boardData }: KanbanSectionProps) {
       return Math.max(max, card.metadata.position);
     }, 0);
   };
+
+  useEffect(() => {
+    if (mainColumn) {
+      setNewTaskButton(
+        mainColumn.id,
+        getMaxPosition(),
+        board.columns.length === 0
+      );
+    } else {
+      setNewTaskButton("", -1, true);
+    }
+  }, [mainColumn, board.columns.length, setNewTaskButton]);
+
+  useEffect(() => { 
+    setNewColumnButton(lastColumnIndex);
+  }, [lastColumnIndex, setNewColumnButton]);
 
   const isFinished = (card: MyCard): boolean =>
     board.columns.some(
@@ -176,56 +194,60 @@ export default function KanbanSection({ boardData }: KanbanSectionProps) {
 
   return (
     <>
-      <div className="flex gap-2 w-auto">
-        <ControlledBoard
-          allowAddCard={false}
-          allowRenameColumn={true}
-          onCardDragEnd={handleCardMove}
-          onColumnDragEnd={handleColumnMove}
-          renderColumnHeader={(column: MyColumn) => (
-            <CustomColumnHeader
-              column={column}
-              handleColumnClick={handleColumnClick}
-            />
-          )}
-          renderCard={(card: MyCard) => (
-            <CustomCard
-              card={card}
-              isFinished={isFinished(card)}
-              handleCardClick={handleCardClick}
-            />
-          )}
-        >
-          {board}
-        </ControlledBoard>
-
+      {/* <div className="flex gap-4 mb-4">
         <NewTaskButton
           listTaskId={mainColumn?.id || ""}
           position={getMaxPosition()}
           disabled={board.columns.length === 0}
         />
-
         <NewColumnButton lastColumnPosition={lastColumnIndex} />
+      </div> */}
+      <div className="overflow-x-auto pb-6">
+        <div className="flex min-h-[60vh] gap-4">
+          <div className="flex gap-4">
+            <ControlledBoard
+              allowAddCard={false}
+              allowRenameColumn={false}
+              onCardDragEnd={handleCardMove}
+              onColumnDragEnd={handleColumnMove}
+              renderColumnHeader={(column: MyColumn) => (
+                <CustomColumnHeader
+                  column={column}
+                  handleColumnClick={handleColumnClick}
+                />
+              )}
+              renderCard={(card: MyCard) => (
+                <CustomCard
+                  card={card}
+                  isFinished={isFinished(card)}
+                  handleCardClick={handleCardClick}
+                />
+              )}
+            >
+              {board}
+            </ControlledBoard>
+          </div>
+
+          <CardDialog
+            cardId={selectedCard?.id}
+            columnId={columnId}
+            isOpen={isDialogOpen}
+            onClose={() => {
+              setIsDialogOpen(false);
+              setSelectedCard(null);
+            }}
+          />
+
+          <ColumnDialog
+            columnId={selectedColumn?.id}
+            isOpen={isColumnDialogOpen}
+            onClose={() => {
+              setIsColumnDialogOpen(false);
+              setSelectedColumn(null);
+            }}
+          />
+        </div>
       </div>
-
-      <CardDialog
-        cardId={selectedCard?.id}
-        columnId={columnId}
-        isOpen={isDialogOpen}
-        onClose={() => {
-          setIsDialogOpen(false);
-          setSelectedCard(null);
-        }}
-      />
-
-      <ColumnDialog
-        columnId={selectedColumn?.id}
-        isOpen={isColumnDialogOpen}
-        onClose={() => {
-          setIsColumnDialogOpen(false);
-          setSelectedColumn(null);
-        }}
-      />
     </>
   );
 }

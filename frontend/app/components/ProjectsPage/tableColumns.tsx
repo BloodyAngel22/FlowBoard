@@ -20,13 +20,13 @@ export const columns: ColumnDef<IProject>[] = [
     cell: (info) => {
       const project = info.row.original;
       return (
-        <div className="flex gap-2 w-max">
+        <div className="flex items-center gap-2">
           <Link
             href={`/projects/${project.id}`}
-            className="flex gap-1 items-center text-blue-500 hover:text-blue-600 transition-colors dark:text-blue-400 dark:hover:text-blue-500 duration-300"
+            className="flex items-center gap-1 text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 transition-colors"
           >
-            Перейти
-            <ExternalLink size={20} />
+            <span>Перейти</span>
+            <ExternalLink size={18} />
           </Link>
           <EditProjectDialog project={project} />
           <DeleteProjectAlert projectId={project.id} />

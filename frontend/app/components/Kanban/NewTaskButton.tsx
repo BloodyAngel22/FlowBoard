@@ -23,6 +23,7 @@ import { categoriesApiInstance } from "@/app/api/categoriesApi";
 import { useProjectId } from "@/app/stores/useProjectId";
 import { useCreateTask } from "@/app/hooks/useTasks";
 import { IKanbanTaskModifyRequest } from "@/app/types/IKanbanTask";
+import { Plus } from "lucide-react";
 
 interface NewTaskButtonProps {
   listTaskId: string;
@@ -89,15 +90,20 @@ export default function NewTaskButton({
     <>
       <Dialog>
         <DialogTrigger asChild>
-          <Button disabled={disabled}>Добавить задачу</Button>
+          <Button disabled={disabled}>
+            <Plus className="h-5 w-5" />
+            <span>{isPending ? "Создание..." : "Добавить задачу"}</span>
+          </Button>
         </DialogTrigger>
-        <DialogContent className="sm:max-w-md">
+        <DialogContent className="border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 sm:max-w-md">
           <form onSubmit={handleSubmit(handleSubmitForm)}>
             <DialogHeader>
-              <DialogTitle>Добавить задачу</DialogTitle>
+              <DialogTitle className="text-zinc-800 dark:text-zinc-100">
+                Добавить задачу
+              </DialogTitle>
             </DialogHeader>
-            <div className="max-h-[400px] overflow-y-auto mt-8 mb-8 pr-4">
-              <div className="flex flex-col gap-3 justify-start items-start space-x-2 w-full">
+            <div className="mt-6 mb-6 max-h-[400px] overflow-y-auto pr-4">
+              <div className="flex w-full flex-col gap-4">
                 <FormInput
                   register={register}
                   name="name"
@@ -148,11 +154,11 @@ export default function NewTaskButton({
               </div>
             </div>
             {isError && (
-              <p className="text-red-400 text-sm ml-2">
+              <p className="ml-2 text-sm text-red-500 dark:text-red-400">
                 {error?.message as string}
               </p>
             )}
-            <DialogFooter className="justify-end">
+            <DialogFooter className="gap-2">
               <DialogClose asChild>
                 <Button type="button" variant="secondary" ref={dialogCloseRef}>
                   Закрыть

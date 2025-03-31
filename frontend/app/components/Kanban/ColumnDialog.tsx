@@ -13,6 +13,7 @@ import FormCheckbox from "../Forms/FormCheckbox";
 import { useColumn, useUpdateColumn, useDeleteColumn } from "@/app/hooks/useColumns";
 import { IColumnModifyRequest } from "@/app/types/IColumn";
 import AlertDelete from "./AlertDelete";
+import { Loader2 } from "lucide-react";
 
 interface ColumnDialogProps {
   columnId: string | undefined;
@@ -46,23 +47,32 @@ function ColumnDialogContent({ projectId, columnId, onClose }: { projectId: stri
   }, [isSuccess, data, reset]);
 
   if (isLoading) {
-    return (
-      <DialogContent className="sm:max-w-[425px]">
-        <DialogHeader>
-          <DialogTitle>Loading...</DialogTitle>
-        </DialogHeader>
-        <div>Loading...</div>
-      </DialogContent>
-    );
+     return (
+       <DialogContent className="border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 sm:max-w-[425px]">
+         <DialogHeader>
+           <DialogTitle>Loading...</DialogTitle>
+         </DialogHeader>
+         <div className="flex h-40 w-full items-center justify-center">
+           <Loader2 className="h-8 w-8 animate-spin text-zinc-500 dark:text-zinc-400" />
+         </div>
+       </DialogContent>
+     );
   }
 
   if (isError) {
     return (
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Error</DialogTitle>
+          <DialogTitle className="text-zinc-800 dark:text-zinc-100">
+            Ошибка
+          </DialogTitle>
         </DialogHeader>
-        <div>Error: {error?.message}</div>
+        <div className="mt-4 rounded border border-red-200 bg-red-50 p-3 text-red-600 dark:border-red-900 dark:bg-red-950/30 dark:text-red-400">
+          {error?.message || "Произошла ошибка при загрузке данных колонки"}
+        </div>
+        <DialogFooter className="mt-4">
+          <Button onClick={onClose}>Закрыть</Button>
+        </DialogFooter>
       </DialogContent>
     );
   }
@@ -90,7 +100,7 @@ function ColumnDialogContent({ projectId, columnId, onClose }: { projectId: stri
 
   if (isSuccess && data?.data) {
     return (
-      <DialogContent>
+      <DialogContent className="border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950">
         <form onSubmit={handleSubmit(handleSubmitForm)}>
           <DialogHeader>
             <DialogTitle className="text-2xl font-bold">
@@ -102,8 +112,8 @@ function ColumnDialogContent({ projectId, columnId, onClose }: { projectId: stri
               />
             </DialogTitle>
           </DialogHeader>
-          <div className="h-[150px] w-full overflow-y-auto mt-4 mb-8 pr-4">
-            <div className="flex flex-col gap-3 justify-start items-start space-x-2 w-full">
+          <div className="mt-6 mb-6 max-h-[200px] w-full overflow-y-auto pr-4">
+            <div className="flex w-full flex-col gap-4">
               <FormCheckbox
                 control={control}
                 name="isFinished"
@@ -113,11 +123,13 @@ function ColumnDialogContent({ projectId, columnId, onClose }: { projectId: stri
             </div>
           </div>
           {isUpdatingError && (
-            <p className="text-red-500">
-              Ошибка обновления: {updatingError?.message}
-            </p>
+            <div className="mb-4 rounded border border-red-200 bg-red-50 p-2 text-red-600 dark:border-red-900 dark:bg-red-950/30 dark:text-red-400">
+              Ошибка обновления:{" "}
+              {updatingError?.message ||
+                "Произошла ошибка при обновлении колонки"}
+            </div>
           )}
-          <DialogFooter>
+          <DialogFooter className="gap-2">
             <Button onClick={onClose} disabled={isUpdating || isDeleting}>
               Закрыть
             </Button>
@@ -130,7 +142,10 @@ function ColumnDialogContent({ projectId, columnId, onClose }: { projectId: stri
               error={deletingError}
               onSuccess={onClose}
             />
-            <Button type="submit" disabled={!isValid || isUpdating || isDeleting}>
+            <Button
+              type="submit"
+              disabled={!isValid || isUpdating || isDeleting}
+            >
               {isUpdating ? "Сохранение..." : "Сохранить"}
             </Button>
           </DialogFooter>

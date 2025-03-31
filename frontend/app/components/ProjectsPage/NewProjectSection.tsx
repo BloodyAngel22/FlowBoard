@@ -17,6 +17,7 @@ import { IProjectModifyRequest } from "@/app/types/IProject";
 import FormInput from "@/app/components/Forms/FormInput";
 import FormTextarea from "@/app/components/Forms/FormTextarea";
 import { useCreateProject } from "@/app/hooks/useProjects";
+import { Plus } from "lucide-react";
 
 export default function NewProjectSection() {
   const [isOpen, setIsOpen] = useState(false);
@@ -55,15 +56,23 @@ export default function NewProjectSection() {
     <>
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
         <DialogTrigger asChild>
-          <Button onClick={() => setIsOpen(true)}>Создать новый проект</Button>
+          <Button
+            className="dark:bg-zinc-300 dark:hover:bg-zinc-100 transition-colors duration-200 cursor-pointer"
+            onClick={() => setIsOpen(true)}
+          >
+            <Plus className="h-4 w-4" />
+            Создать проект
+          </Button>
         </DialogTrigger>
-        <DialogContent className="sm:max-w-[425px]">
+        <DialogContent className="sm:max-w-[425px] border-zinc-800 bg-zinc-950">
           <form onSubmit={handleSubmit(handleCreateProject)}>
             <DialogHeader>
-              <DialogTitle>Создать новый проект</DialogTitle>
+              <DialogTitle className="text-zinc-100">
+                Создать новый проект
+              </DialogTitle>
             </DialogHeader>
-            <div className="max-h-[400px] overflow-y-auto mt-8 mb-8 pr-4">
-              <div className="flex flex-col gap-3 justify-start items-start space-x-2 w-full">
+            <div className="mt-6 mb-6 max-h-[400px] overflow-y-auto pr-4">
+              <div className="flex w-full flex-col gap-4">
                 <FormInput
                   register={register}
                   name="name"
@@ -81,16 +90,21 @@ export default function NewProjectSection() {
                 />
               </div>
             </div>
-            <DialogFooter>
+            <DialogFooter className="gap-2">
               <Button
                 type="button"
                 variant="outline"
                 onClick={() => setIsOpen(false)}
                 disabled={isPending}
+                className="dark:bg-zinc-800 dark:hover:bg-zinc-900 transition-colors duration-200 cursor-pointer"
               >
                 Отменить
               </Button>
-              <Button type="submit" disabled={!isValid || isPending}>
+              <Button
+                className="dark:bg-zinc-300 dark:hover:bg-zinc-100 transition-colors duration-200 cursor-pointer"
+                type="submit"
+                disabled={!isValid || isPending}
+              >
                 {isPending ? "Создание..." : "Создать"}
               </Button>
             </DialogFooter>
