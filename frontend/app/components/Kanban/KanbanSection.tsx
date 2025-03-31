@@ -24,6 +24,8 @@ import ColumnDialog from "./ColumnDialog";
 import { useMoveTask } from "@/app/hooks/useTasks";
 import { useProjectId } from "@/app/stores/useProjectId";
 import { ICardMoveRequest } from "@/app/types/IKanbanTask";
+import { IColumnMoveRequest } from "@/app/types/IColumn";
+import { useMoveColumn } from "@/app/hooks/useColumns";
 
 interface KanbanSectionProps {
   boardData: IProjectFull;
@@ -45,6 +47,7 @@ export default function KanbanSection({ boardData }: KanbanSectionProps) {
   const { projectId } = useProjectId();
 
   const { mutate: moveTask, isPending: isMoveTaskPending } = useMoveTask(projectId);
+  const { mutate: moveColumnM, isPending: isMoveColumnPending } = useMoveColumn(projectId);
 
   useEffect(() => {
     const transformedBoard = transformToKanbanBoard(boardData);
@@ -58,14 +61,12 @@ export default function KanbanSection({ boardData }: KanbanSectionProps) {
   const lastColumnIndex = board.columns.length - 1;
 
   const getMaxPosition = (): number => {
-    if (mainColumn === undefined) {
-      return 0;
+    if (!mainColumn || !mainColumn.cards || mainColumn.cards.length === 0) {
+      return -1;
     }
-    return (
-      mainColumn.cards.reduce((max, card) => {
-        return Math.max(max, card.metadata.position);
-      }, 0) || 0
-    );
+    return mainColumn.cards.reduce((max, card) => {
+      return Math.max(max, card.metadata.position);
+    }, 0);
   };
 
   const isFinished = (card: MyCard): boolean =>
@@ -86,7 +87,7 @@ export default function KanbanSection({ boardData }: KanbanSectionProps) {
       return updatedBoard;
     });
 
-    const moveData: ICardMoveRequest = {
+    const moveTaskData: ICardMoveRequest = {
       taskId: String(_card.id),
       fromPosition: source?.fromPosition || 0,
       toPosition: destination?.toPosition || 0,
@@ -94,7 +95,7 @@ export default function KanbanSection({ boardData }: KanbanSectionProps) {
       toColumnId: String(destination?.toColumnId),
     };
 
-    moveTask(moveData, {
+    moveTask(moveTaskData, {
       onError: (error) => {
         console.error(error);
 
@@ -111,6 +112,14 @@ export default function KanbanSection({ boardData }: KanbanSectionProps) {
     sourceIndex,
     destinationIndex
   ) => {
+    console.log(
+      "Column",
+      _column.id,
+      "was moved from",
+      sourceIndex,
+      "to",
+      destinationIndex
+    )
     setBoard((currentBoard) => {
       const updatedBoard = moveColumn(
         currentBoard,
@@ -119,6 +128,27 @@ export default function KanbanSection({ boardData }: KanbanSectionProps) {
       );
       return updatedBoard;
     });
+
+    const moveColumnData: IColumnMoveRequest = {
+      columnId: String(_column.id),
+      fromPosition: sourceIndex?.fromPosition || 0,
+      toPosition: destinationIndex?.toPosition || 0,
+    };
+
+    moveColumnM(moveColumnData, {
+      onError: (error) => {
+        console.error(error);
+
+        setBoard((currentBoard) => {
+          const revertedBoard = moveColumn(
+            currentBoard,
+            sourceIndex,
+            destinationIndex
+          );
+          return revertedBoard;
+        });
+      }
+    })
   };
 
   const handleCardClick = (card: MyCard) => {
@@ -172,6 +202,7 @@ export default function KanbanSection({ boardData }: KanbanSectionProps) {
         <NewTaskButton
           listTaskId={mainColumn?.id || ""}
           position={getMaxPosition()}
+          disabled={board.columns.length === 0}
         />
 
         <NewColumnButton lastColumnPosition={lastColumnIndex} />

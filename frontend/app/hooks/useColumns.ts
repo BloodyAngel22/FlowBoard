@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { IColumnModifyRequest, IColumnModifyResponse } from "../types/IColumn";
+import { IColumnModifyRequest, IColumnModifyResponse, IColumnMoveRequest, IColumnMoveResponse } from "../types/IColumn";
 import { tasksApiInstance } from "../api/tasksApi";
 
 export const useColumn = (projectId: string, columnId: string) => {
@@ -66,4 +66,27 @@ export const useDeleteColumn = (projectId: string, columnId: string) => {
       console.error(error);
     }
   })
+}
+
+export const useMoveColumn = (projectId: string) => {
+  const queryClient = useQueryClient();
+
+  return useMutation<IColumnMoveResponse, Error, IColumnMoveRequest>({
+    mutationFn: (columnMove: IColumnMoveRequest) => {
+      if (!columnMove.columnId) {
+        console.error("columnId is missing:", { columnMove });
+        throw new Error("columnId is missing");
+      }
+      return tasksApiInstance.moveColumn(projectId, columnMove);
+    },
+    onSuccess: (response) => {
+      queryClient.invalidateQueries({
+        queryKey: ["project", projectId],
+      });
+      // console.log(response);
+    },
+    onError: (error) => {
+      console.error(error);
+    },
+  });
 }

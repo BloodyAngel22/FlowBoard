@@ -175,6 +175,17 @@ namespace backend.Application.Services
         {
             try
             {
+                var kanbanTask = await _repository.GetKanbanTask(projectId, listTaskId, kanbanTaskId);
+
+                var tasksInColumn = await _repository.GetListTaskById(projectId, listTaskId);
+
+                var tasksToShift = tasksInColumn.Tasks.Where(x => x.Position > kanbanTask.Position).ToList();
+
+                foreach (var task in tasksToShift)
+                {
+                    await _repository.ChangePositionToTask(projectId, listTaskId, task.Id, task.Position - 1);
+                }
+
                 await _repository.DeleteKanbanTask(projectId, listTaskId, kanbanTaskId);
 
                 return ServiceResult<string>.Ok("Kanban task deleted");
@@ -245,11 +256,50 @@ namespace backend.Application.Services
                         await _repository.ChangePositionToTask(projectId, toColumnId, task.Id, task.Position + 1);
                     }
 
-                    //FIXME: неправильно работает. Заменить на ChangePositionToTaskToOtherColumn
                     await _repository.ChangePositionToTaskInOtherColumn(projectId, fromColumnId, toColumnId, taskId, moveTaskEventDTO.ToPosition);
 
                     return ServiceResult<string>.Ok("Kanban task moved to another column");
                 }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error moving kanban task");
+                return ServiceResult<string>.Fail();
+            }
+        }
+
+        public async Task<ServiceResult<string>> MoveListTask(ObjectId projectId, ListTaskMoveEventDTO moveTaskEventDTO)
+        {
+            try
+            {
+                var columnId = ObjectId.Parse(moveTaskEventDTO.ColumnId);
+
+                var allColumns = await _repository.GetListTasks(projectId);
+
+                var movingColumn = await _repository.GetListTaskById(projectId, columnId);
+
+                if (moveTaskEventDTO.FromPosition > moveTaskEventDTO.ToPosition)
+                {
+                    var columnsToShift = allColumns.Where(c => c.Position >= moveTaskEventDTO.ToPosition && c.Position < moveTaskEventDTO.FromPosition).ToList();
+
+                    foreach (var col in columnsToShift)
+                    {
+                        await _repository.ChangePositionToColumn(projectId, col.Id, col.Position + 1);
+                    }
+                }
+                else if (moveTaskEventDTO.FromPosition < moveTaskEventDTO.ToPosition)
+                {
+                    var columnsToShift = allColumns.Where(c => c.Position > moveTaskEventDTO.FromPosition && c.Position <= moveTaskEventDTO.ToPosition).ToList();
+
+                    foreach (var col in columnsToShift)
+                    {
+                        await _repository.ChangePositionToColumn(projectId, col.Id, col.Position - 1);
+                    }
+                }
+
+                await _repository.ChangePositionToColumn(projectId, columnId, moveTaskEventDTO.ToPosition);
+
+                return ServiceResult<string>.Ok("Kanban column moved");
             }
             catch (Exception ex)
             {

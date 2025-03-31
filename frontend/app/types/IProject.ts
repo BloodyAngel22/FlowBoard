@@ -16,6 +16,16 @@ export interface IProject {
   description?: string;
 }
 
+export interface IProjectModifyRequest {
+  name: string;
+  description?: string | null;
+}
+
+export interface IProjectModifyResponse {
+  success: boolean;
+  data: IProject;
+}
+
 export interface IProjectFull {
   id: string;
   name: string;

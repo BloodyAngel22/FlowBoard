@@ -1,5 +1,5 @@
-import { useQuery } from "@tanstack/react-query"
-import { IProjectFullResponse, IProjectResponse } from "../types/IProject"
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
+import { IProjectFullResponse, IProjectModifyRequest, IProjectModifyResponse, IProjectResponse } from "../types/IProject"
 import { projectsApiInstance } from "../api/projectsApi";
 
 export const useProjects = () => {
@@ -19,4 +19,61 @@ export const useProject = (id: string) => {
     retry: 1,
     enabled: !!id
   });
+}
+
+export const useCreateProject = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation<IProjectModifyResponse, Error, IProjectModifyRequest>({
+    mutationFn: (project: IProjectModifyRequest) =>
+      projectsApiInstance.createProject(project),
+    onSuccess: (response) => {
+      queryClient.invalidateQueries({
+        queryKey: ["projects"],
+      });
+      // console.log(response);
+    },
+    onError: (error) => {
+      console.error(error);
+    },
+  });
+}
+
+export const useUpdateProject = (id: string) => {
+  const queryClient = useQueryClient();
+
+  return useMutation<IProjectModifyResponse, Error, IProjectModifyRequest>({
+    mutationFn: (project: IProjectModifyRequest) =>
+      projectsApiInstance.updateProject(id, project),
+    onSuccess: (response) => {
+      queryClient.invalidateQueries({
+        queryKey: ["project", id],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["projects"],
+      });
+      // console.log(response);
+    },
+    onError: (error) => {
+      console.error(error);
+    },
+  });
+}
+
+export const useDeleteProject = (id: string) => {
+  const queryClient = useQueryClient();
+
+  return useMutation<IProjectModifyResponse, Error>({
+    mutationFn: () =>
+      projectsApiInstance.deleteProject(id),
+    onSuccess: (response) => {
+      queryClient.invalidateQueries({
+        queryKey: ["projects"],
+      });
+      // console.log(response);
+    },
+    onError: (error) => {
+      console.error(error);
+    }
+  })
 }

@@ -23,4 +23,11 @@ namespace backend.Application.DTOs
         public required int Position { get; set; }
         public required bool IsFinished { get; set; }
     }
+
+    public class ListTaskMoveEventDTO
+    {
+        public required string ColumnId { get; set; }
+        public required int FromPosition { get; set; }
+        public required int ToPosition { get; set; }
+    }
 }

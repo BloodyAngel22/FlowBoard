@@ -15,3 +15,14 @@ export interface IColumnResponse {
   position: number;
   isFinished: boolean;
 }
+
+export interface IColumnMoveRequest {
+  columnId: string;
+  fromPosition: number;
+  toPosition: number;
+}
+
+export interface IColumnMoveResponse {
+  success: boolean;
+  data: string;
+}

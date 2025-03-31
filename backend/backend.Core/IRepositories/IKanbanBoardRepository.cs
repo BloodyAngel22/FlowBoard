@@ -19,9 +19,13 @@ namespace backend.Core.IRepositories
         Task DeleteKanbanTask(ObjectId projectId, ObjectId listTaskId, ObjectId kanbanTaskId);
         // Task MoveKanbanTask(ObjectId projectId, ObjectId listTaskId, ObjectId kanbanTaskId, int position);
         Task<KanbanTask> GetKanbanTaskByPosition(ObjectId projectId, ObjectId listTaskId, int position);
+
         Task ChangePositionToTask(ObjectId projectId, ObjectId listTaskId, ObjectId kanbanTaskId, int position);
         Task ChangePositionToTaskInOtherColumn(ObjectId projectId, ObjectId currentListTaskId, ObjectId newListTaskId, ObjectId kanbanTaskId, int position);
 
+        Task ChangePositionToColumn(ObjectId projectId, ObjectId listTaskId, int position);
+
         Task<ListTask> GetListTaskById(ObjectId projectId, ObjectId id);
+        Task<List<ListTask>> GetListTasks(ObjectId projectId);
     }
 }

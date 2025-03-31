@@ -1,4 +1,8 @@
-import { IColumnModifyRequest } from "../types/IColumn";
+import {
+  IColumnModifyRequest,
+  IColumnMoveRequest,
+  IColumnMoveResponse,
+} from "../types/IColumn";
 import {
   ICardMoveRequest,
   IKanbanTaskModifyRequest,
@@ -269,6 +273,37 @@ class kanbanApi {
             "Content-Type": "application/json",
           },
           body: JSON.stringify(moveTask),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  }
+
+  public async moveColumn(
+    projectId: string,
+    moveColumn: IColumnMoveRequest
+  ): Promise<IColumnMoveResponse> {
+    try {
+      const queryParams = new URLSearchParams();
+      queryParams.set("projectId", projectId);
+
+      const response = await fetch(
+        `${this.url}/listtasks/move?${queryParams.toString()}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(moveColumn),
         }
       );
 

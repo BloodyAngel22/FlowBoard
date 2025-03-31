@@ -74,7 +74,7 @@ export default function NewColumnButton({
             <DialogHeader>
               <DialogTitle>Добавить колонку</DialogTitle>
             </DialogHeader>
-            <div className="h-[150px] overflow-y-auto mt-8 mb-8 pr-4">
+            <div className="max-h-[150px] overflow-y-auto mt-8 mb-8 pr-4">
               <div className="flex flex-col gap-3 justify-start items-start space-x-2 w-full">
                 <FormInput
                   register={register}

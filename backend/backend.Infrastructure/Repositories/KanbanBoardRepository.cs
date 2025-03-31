@@ -185,5 +185,23 @@ namespace backend.Infrastructure.Repositories
 
             await _context.Projects.ReplaceOneAsync(project => project.Id == projectId, project);
         }
+
+        public async Task ChangePositionToColumn(ObjectId projectId, ObjectId listTaskId, int position)
+        {
+            var project = await GetProjectById(projectId);
+
+            var listTask = GetListTaskByProject(ref project, listTaskId);
+
+            listTask.Position = position;
+
+            await _context.Projects.ReplaceOneAsync(project => project.Id == projectId, project);
+        }
+
+        public async Task<List<ListTask>> GetListTasks(ObjectId projectId)
+        {
+            var project = await GetProjectById(projectId);
+
+            return project.ListTasks;
+        }
     }
 }

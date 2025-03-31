@@ -27,11 +27,13 @@ import { IKanbanTaskModifyRequest } from "@/app/types/IKanbanTask";
 interface NewTaskButtonProps {
   listTaskId: string;
   position: number;
+  disabled: boolean;
 }
 
 export default function NewTaskButton({
   listTaskId,
   position,
+  disabled,
 }: NewTaskButtonProps) {
   const { projectId } = useProjectId();
   const { mutate, isPending, isError, error } = useCreateTask(
@@ -87,14 +89,14 @@ export default function NewTaskButton({
     <>
       <Dialog>
         <DialogTrigger asChild>
-          <Button>Добавить задачу</Button>
+          <Button disabled={disabled}>Добавить задачу</Button>
         </DialogTrigger>
         <DialogContent className="sm:max-w-md">
           <form onSubmit={handleSubmit(handleSubmitForm)}>
             <DialogHeader>
               <DialogTitle>Добавить задачу</DialogTitle>
             </DialogHeader>
-            <div className="h-[400px] overflow-y-auto mt-8 mb-8 pr-4">
+            <div className="max-h-[400px] overflow-y-auto mt-8 mb-8 pr-4">
               <div className="flex flex-col gap-3 justify-start items-start space-x-2 w-full">
                 <FormInput
                   register={register}

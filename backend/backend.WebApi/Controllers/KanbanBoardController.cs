@@ -96,9 +96,19 @@ namespace backend.WebApi.Controllers
         }
 
         [HttpPut("kanbantasks/move")]
-        public async Task<IActionResult> ChangePositionToTask([FromQuery] ObjectId projectId, [FromBody] KanbanTaskMoveEventDTO moveTaskEventDTO) 
+        public async Task<IActionResult> ChangePositionToTask([FromQuery] ObjectId projectId, [FromBody] KanbanTaskMoveEventDTO moveTaskEventDTO)
         {
             var result = await _kanbanBoardService.MoveKanbanTask(projectId, moveTaskEventDTO);
+
+            return result.Success
+                ? ResponseHelper.Ok(result.Data)
+                : ResponseHelper.Error();
+        }
+
+        [HttpPut("listtasks/move")]
+        public async Task<IActionResult> ChangePositionToListTask([FromQuery] ObjectId projectId, [FromBody] ListTaskMoveEventDTO moveListTaskEventDTO)
+        {
+            var result = await _kanbanBoardService.MoveListTask(projectId, moveListTaskEventDTO);
 
             return result.Success
                 ? ResponseHelper.Ok(result.Data)
