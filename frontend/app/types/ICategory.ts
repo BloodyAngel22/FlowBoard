@@ -12,3 +12,7 @@ export interface ICategoriesResponse {
   success: boolean;
   data: ICategory[];
 }
+
+export interface ICategoryModifyRequest {
+  name: string;
+}

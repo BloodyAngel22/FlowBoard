@@ -136,15 +136,6 @@ namespace backend.Infrastructure.Repositories
             await _context.Projects.ReplaceOneAsync(project => project.Id == projectId, project);
         }
 
-        // public async Task MoveKanbanTask(ObjectId projectId, ObjectId listTaskId, ObjectId kanbanTaskId, int position)
-        // {
-        //     var project = await GetProjectById(projectId);
-
-        //     var kanbanTaskToMove = GetKanbanTaskByProject(ref project, listTaskId, kanbanTaskId);
-
-        //     kanbanTaskToMove.Position = position;
-        // }
-
         public async Task<KanbanTask> GetKanbanTaskByPosition(ObjectId projectId, ObjectId listTaskId, int position)
         {
             var project = await GetProjectById(projectId);

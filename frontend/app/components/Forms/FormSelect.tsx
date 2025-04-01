@@ -32,14 +32,17 @@ export default function FormSelect<T extends FieldValues>({
   isRequired = false,
   allowClear = false,
 }: FormSelectProps<T>) {
-  const CLEAR_VALUE = "none";
+  const CLEAR_VALUE = "__none__";
 
   const selectOptions =
     allowClear && !isRequired
       ? [{ value: CLEAR_VALUE, label: "Не выбрано" }, ...options]
       : options;
-  
-  const expectedType = typeof selectOptions[0]?.value;
+
+  const firstRealOption = options[0];
+  const expectedType = firstRealOption
+    ? typeof firstRealOption.value
+    : "string";
 
   return (
     <div className="w-full">
@@ -63,9 +66,7 @@ export default function FormSelect<T extends FieldValues>({
             }}
             value={
               field.value === null || field.value === undefined
-                ? allowClear && !isRequired
-                  ? CLEAR_VALUE
-                  : String(options[0]?.value || "")
+                ? CLEAR_VALUE
                 : String(field.value)
             }
           >
@@ -74,7 +75,10 @@ export default function FormSelect<T extends FieldValues>({
             </SelectTrigger>
             <SelectContent>
               {selectOptions.map((option) => (
-                <SelectItem key={option.value} value={String(option.value)}>
+                <SelectItem
+                  key={String(option.value)}
+                  value={String(option.value)}
+                >
                   {option.icon && (
                     <option.icon className={twMerge(option.styles, "mr-2")} />
                   )}

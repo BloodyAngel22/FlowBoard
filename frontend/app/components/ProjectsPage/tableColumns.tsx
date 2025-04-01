@@ -8,15 +8,15 @@ import DeleteProjectAlert from "./DeleteProjectAlert";
 export const columns: ColumnDef<IProject>[] = [
   {
     accessorKey: "name",
-    header: "Name",
+    header: "Имя",
   },
   {
     accessorKey: "description",
-    header: "Description",
+    header: "Описание",
     cell: (info) => info.getValue() ?? "empty",
   },
   {
-    header: "Actions",
+    header: "Действия",
     cell: (info) => {
       const project = info.row.original;
       return (

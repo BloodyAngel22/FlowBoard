@@ -13,7 +13,7 @@ import {
   moveCard,
   moveColumn,
 } from "@caldwell619/react-kanban/dist/services/helpers";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import CustomColumnHeader from "./CustomColumnHeader";
 import CustomCard from "./CustomCard";
 import NewTaskButton from "./NewTaskButton";
@@ -26,6 +26,7 @@ import { ICardMoveRequest } from "@/app/types/IKanbanTask";
 import { IColumnMoveRequest } from "@/app/types/IColumn";
 import { useMoveColumn } from "@/app/hooks/useColumns";
 import { useKanbanButton } from "@/app/stores/useKanbanButton";
+import { useBoard } from "@/app/stores/useBoard";
 
 interface KanbanSectionProps {
   boardData: IProjectFull;
@@ -35,9 +36,11 @@ const ControlledBoard =
   BaseControlledBoard as React.ComponentType<MyControlledBoardProps>;
 
 export default function KanbanSection({ boardData }: KanbanSectionProps) {
+  const { setBoard: setBoardStore } = useBoard();
   const [board, setBoard] = useState<MyKanbanBoard>(
     transformToKanbanBoard(boardData)
   );
+
   const [selectedCard, setSelectedCard] = useState<MyCard | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
@@ -54,6 +57,7 @@ export default function KanbanSection({ boardData }: KanbanSectionProps) {
   useEffect(() => {
     const transformedBoard = transformToKanbanBoard(boardData);
     setBoard(transformedBoard);
+    setBoardStore(transformedBoard);
   }, [boardData]);
 
   const mainColumn = board.columns.find(
@@ -194,14 +198,6 @@ export default function KanbanSection({ boardData }: KanbanSectionProps) {
 
   return (
     <>
-      {/* <div className="flex gap-4 mb-4">
-        <NewTaskButton
-          listTaskId={mainColumn?.id || ""}
-          position={getMaxPosition()}
-          disabled={board.columns.length === 0}
-        />
-        <NewColumnButton lastColumnPosition={lastColumnIndex} />
-      </div> */}
       <div className="overflow-x-auto pb-6">
         <div className="flex min-h-[60vh] gap-4">
           <div className="flex gap-4">

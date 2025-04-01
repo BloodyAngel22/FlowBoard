@@ -3,6 +3,7 @@ import FlowBoardLogo from "../FlowBoardLogo";
 import { useKanbanButton } from "@/app/stores/useKanbanButton";
 import NewTaskButton from "./NewTaskButton";
 import NewColumnButton from "./NewColumnButton";
+import { MainDialogSection } from "../Categories/MainDialogSection";
 
 export default function KanbanHeader() {
   const { newTaskButton, newColumnButton } = useKanbanButton();
@@ -27,6 +28,7 @@ export default function KanbanHeader() {
             <NewColumnButton
               lastColumnPosition={newColumnButton.lastColumnPosition}
             />
+            <MainDialogSection />
           </div>
         </div>
       </div>

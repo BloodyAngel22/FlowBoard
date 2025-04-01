@@ -77,10 +77,11 @@ export default function CustomCard({
           {endDateFormatted && (
             <div
               className={twMerge(
-                "mt-2 flex items-center text-xs mb-1",
+                "mt-2 -ml-2 flex items-center text-xs mb-1",
                 isOverdue && !isFinished
                   ? "text-red-600 dark:text-red-400"
-                  : "text-zinc-500 dark:text-zinc-400"
+                  : "text-zinc-500 dark:text-zinc-400",
+                category?.data.name && "ml-0"
               )}
             >
               <Calendar className="mr-1 h-3.5 w-3.5" />

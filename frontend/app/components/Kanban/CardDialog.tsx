@@ -106,6 +106,7 @@ function CardDialogContent({ projectId, cardId, columnId, onClose }: { projectId
       mutate(updatedTask, {
         onSuccess: () => {
           onClose();
+          reset();
         },
         onError: (err) => {
           console.error("Update failed:", err);
