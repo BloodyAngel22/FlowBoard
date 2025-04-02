@@ -1,11 +1,13 @@
 "use client";
 
-import ProjectsPage from "./components/ProjectsPage/page";
+import ProjectsHeader from "./components/Projects/ProjectsHeader";
+import ProjectsTable from "./components/Projects/ProjectsTable";
 
 export default function Home() {
   return (
     <>
-      <ProjectsPage />
+      <ProjectsHeader />
+      <ProjectsTable />
     </>
   );
 }

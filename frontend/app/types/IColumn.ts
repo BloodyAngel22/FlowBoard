@@ -1,3 +1,13 @@
+import { ITask } from "./ITask";
+
+export interface IColumn {
+  id: string;
+  name: string;
+  position: number;
+  isFinished: boolean;
+  tasks: ITask[];
+}
+
 export interface IColumnModifyRequest {
   name: string;
   position: number;

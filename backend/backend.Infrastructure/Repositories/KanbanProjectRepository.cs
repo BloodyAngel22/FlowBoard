@@ -3,9 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using backend.Core.IRepositories;
-using backend.Core.Models;
 using MongoDB.Bson;
 using MongoDB.Driver;
+
+using MProject = backend.Core.Models.Project;
 
 namespace backend.Infrastructure.Repositories
 {
@@ -18,7 +19,7 @@ namespace backend.Infrastructure.Repositories
             _context = context;
         }
 
-        public async Task<Project> CreateProject(Project project)
+        public async Task<MProject> CreateProject(MProject project)
         {
             await _context.Projects.InsertOneAsync(project);
 
@@ -27,35 +28,35 @@ namespace backend.Infrastructure.Repositories
 
         public async Task DeleteProject(ObjectId id)
         {
-            var project = await _context.Projects.Find(project => project.Id == id).FirstOrDefaultAsync() ?? throw new Exception("Project not found");
+            var project = await _context.Projects.Find(project => project.Id == id).FirstOrDefaultAsync() ?? throw new Exception("MProject not found");
 
             await _context.Projects.DeleteOneAsync(project => project.Id == id);
         }
 
-        public async Task<Project?> GetProject(ObjectId id)
+        public async Task<MProject?> GetProject(ObjectId id)
         {
             var project = await _context.Projects.Find(project => project.Id == id).FirstOrDefaultAsync();
 
-            project.ListTasks.Sort((x, y) => x.Position.CompareTo(y.Position));
+            project.Columns.Sort((x, y) => x.Position.CompareTo(y.Position));
 
-            foreach (var listTask in project.ListTasks)
+            foreach (var column in project.Columns)
             {
-                listTask.Tasks.Sort((x, y) => x.Position.CompareTo(y.Position));
+                column.Tasks.Sort((x, y) => x.Position.CompareTo(y.Position));
             }
 
             return project;
         }
 
-        public async Task<List<Project>> GetAllProjects()
+        public async Task<List<MProject>> GetAllProjects()
         {
             var projects = await _context.Projects.Find(_ => true).ToListAsync();
 
             return projects;
         }
 
-        public async Task UpdateProject(ObjectId id, Project project)
+        public async Task UpdateProject(ObjectId id, MProject project)
         {
-            var existingProject = await _context.Projects.Find(project => project.Id == id).FirstOrDefaultAsync() ?? throw new Exception("Project not found");
+            var existingProject = await _context.Projects.Find(project => project.Id == id).FirstOrDefaultAsync() ?? throw new Exception("MProject not found");
 
             var result = await _context.Projects.ReplaceOneAsync(
                 project => project.Id == id,

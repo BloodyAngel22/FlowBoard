@@ -15,13 +15,13 @@ export default function KanbanHeader() {
           <FlowBoardLogo />
           <div className="flex gap-4 items-center">
             <Link
-              href="/"
+              href="/projects"
               className="flex items-center gap-1 text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 transition-colors"
             >
               На главную
             </Link>
             <NewTaskButton
-              listTaskId={newTaskButton.listTaskId}
+              columnId={newTaskButton.columnId}
               position={newTaskButton.position}
               disabled={newTaskButton.disabled}
             />

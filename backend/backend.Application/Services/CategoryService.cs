@@ -5,9 +5,10 @@ using System.Threading.Tasks;
 using backend.Application.DTOs;
 using backend.Application.Entities;
 using backend.Core.IRepositories;
-using backend.Core.Models;
 using Microsoft.Extensions.Logging;
 using MongoDB.Bson;
+
+using MCategory = backend.Core.Models.Category;
 
 namespace backend.Application.Services
 {
@@ -20,22 +21,22 @@ namespace backend.Application.Services
         private readonly ICategoryRepository _categoryRepository = categoryRepository;
         private readonly ILogger<CategoryService> _logger = logger;
 
-        public async Task<ServiceResult<List<Category>>> GetCategories()
+        public async Task<ServiceResult<List<MCategory>>> GetCategories()
         {
             try
             {
                 var categories = await _categoryRepository.GetAllCategories();
 
-                return ServiceResult<List<Category>>.Ok(categories);
+                return ServiceResult<List<MCategory>>.Ok(categories);
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error getting categories");
-                return ServiceResult<List<Category>>.Fail();
+                return ServiceResult<List<MCategory>>.Fail();
             }
         }
 
-        public async Task<ServiceResult<Category>> GetCategory(ObjectId id)
+        public async Task<ServiceResult<MCategory>> GetCategory(ObjectId id)
         {
             try
             {
@@ -43,22 +44,22 @@ namespace backend.Application.Services
 
                 if (category == null)
                 {
-                    _logger.LogError("Category not found");
-                    return ServiceResult<Category>.Fail();
+                    _logger.LogError("MCategory not found");
+                    return ServiceResult<MCategory>.Fail();
                 }
 
-                return ServiceResult<Category>.Ok(category);
+                return ServiceResult<MCategory>.Ok(category);
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error getting category");
-                return ServiceResult<Category>.Fail();
+                return ServiceResult<MCategory>.Fail();
             }
         }
 
         public async Task<ServiceResult<string>> CreateCategory(CategoryDTO category)
         {
-            var newCategory = new Category
+            var newCategory = new MCategory
             {
                 Name = category.Name
             };
@@ -67,7 +68,7 @@ namespace backend.Application.Services
             {
                 await _categoryRepository.CreateCategory(newCategory);
 
-                return ServiceResult<string>.Ok("Category created");
+                return ServiceResult<string>.Ok("MCategory created");
             }
             catch (Exception ex)
             {
@@ -78,7 +79,7 @@ namespace backend.Application.Services
 
         public async Task<ServiceResult<string>> UpdateCategory(ObjectId id, CategoryDTO category)
         {
-            var categoryToUpdate = new Category
+            var categoryToUpdate = new MCategory
             {
                 Id = id,
                 Name = category.Name
@@ -88,7 +89,7 @@ namespace backend.Application.Services
             {
                 await _categoryRepository.UpdateCategory(id, categoryToUpdate);
 
-                return ServiceResult<string>.Ok("Category updated");
+                return ServiceResult<string>.Ok("MCategory updated");
             }
             catch (Exception ex)
             {
@@ -103,7 +104,7 @@ namespace backend.Application.Services
             {
                 await _categoryRepository.DeleteCategory(id);
 
-                return ServiceResult<string>.Ok("Category deleted");
+                return ServiceResult<string>.Ok("MCategory deleted");
             }
             catch (Exception ex)
             {

@@ -15,100 +15,100 @@ namespace backend.WebApi.Controllers
     {
         private readonly KanbanBoardService _kanbanBoardService = kanbanBoardService;
 
-        [HttpGet("{columnId}")]
-        public async Task<IActionResult> GetListInfo(ObjectId projectId, ObjectId columnId)
+        [HttpGet("columns/{columnId}")]
+        public async Task<IActionResult> GetColumn(ObjectId projectId, ObjectId columnId)
         {
-            var result = await _kanbanBoardService.GetListInfo(projectId, columnId);
+            var result = await _kanbanBoardService.GetColumnInfo(projectId, columnId);
 
             return result.Success
                 ? ResponseHelper.Ok(result.Data)
                 : ResponseHelper.Error();
         }
 
-        [HttpPost]
-        public async Task<IActionResult> CreateListTask(ObjectId projectId, ListTaskDTO listTaskDTO)
+        [HttpPost("columns")]
+        public async Task<IActionResult> CreateColumn(ObjectId projectId, ColumnDTO columnDTO)
         {
-            var result = await _kanbanBoardService.CreateListTask(projectId, listTaskDTO);
+            var result = await _kanbanBoardService.CreateColumn(projectId, columnDTO);
 
             return result.Success
                 ? ResponseHelper.Ok(result.Data)
                 : ResponseHelper.Error();
         }
 
-        [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateListTask(ObjectId projectId, ObjectId id, ListTaskDTO listTaskDTO)
+        [HttpPut("columns/{id}")]
+        public async Task<IActionResult> UpdateColumn(ObjectId projectId, ObjectId id, ColumnDTO columnDTO)
         {
-            var result = await _kanbanBoardService.UpdateListTask(projectId, id, listTaskDTO);
+            var result = await _kanbanBoardService.UpdateColumn(projectId, id, columnDTO);
 
             return result.Success
                 ? ResponseHelper.Ok(result.Data)
                 : ResponseHelper.Error();
         }
 
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteListTask(ObjectId projectId, ObjectId id)
+        [HttpDelete("columns/{id}")]
+        public async Task<IActionResult> DeleteColumn(ObjectId projectId, ObjectId id)
         {
-            var result = await _kanbanBoardService.DeleteListTask(projectId, id);
+            var result = await _kanbanBoardService.DeleteColumn(projectId, id);
 
             return result.Success
                 ? ResponseHelper.Ok(result.Data)
                 : ResponseHelper.Error();
         }
 
-        [HttpGet("{listTaskId}/kanbantasks/{kanbanTaskId}")]
-        public async Task<IActionResult> GetKanbanTask(ObjectId projectId, ObjectId listTaskId, ObjectId kanbanTaskId)
+        [HttpGet("columns/{columnId}/tasks/{taskId}")]
+        public async Task<IActionResult> GetTask(ObjectId projectId, ObjectId columnId, ObjectId taskId)
         {
-            var result = await _kanbanBoardService.GetKanbanTask(projectId, listTaskId, kanbanTaskId);
+            var result = await _kanbanBoardService.GetTask(projectId, columnId, taskId);
 
             return result.Success
                 ? ResponseHelper.Ok(result.Data)
                 : ResponseHelper.Error();
         }
 
-        [HttpPost("{listTaskId}/kanbantasks")]
-        public async Task<IActionResult> CreateKanbanTask(ObjectId projectId, ObjectId listTaskId, KanbanTaskDTO kanbanTaskDTO)
+        [HttpPost("columns/{columnId}/tasks")]
+        public async Task<IActionResult> CreateTask(ObjectId projectId, ObjectId columnId, TaskDTO taskDTO)
         {
-            var result = await _kanbanBoardService.CreateKanbanTask(projectId, listTaskId, kanbanTaskDTO);
+            var result = await _kanbanBoardService.CreateTask(projectId, columnId, taskDTO);
 
             return result.Success
                 ? ResponseHelper.Ok(result.Data)
                 : ResponseHelper.Error();
         }
 
-        [HttpPut("{listTaskId}/kanbantasks/{kanbanTaskId}")]
-        public async Task<IActionResult> UpdateKanbanTask(ObjectId projectId, ObjectId listTaskId, ObjectId kanbanTaskId, KanbanTaskDTO kanbanTaskDTO)
+        [HttpPut("columns/{columnId}/tasks/{taskId}")]
+        public async Task<IActionResult> UpdateTask(ObjectId projectId, ObjectId columnId, ObjectId taskId, TaskDTO taskDTO)
         {
-            var result = await _kanbanBoardService.UpdateKanbanTask(projectId, listTaskId, kanbanTaskId, kanbanTaskDTO);
+            var result = await _kanbanBoardService.UpdateTask(projectId, columnId, taskId, taskDTO);
 
             return result.Success
                 ? ResponseHelper.Ok(result.Data)
                 : ResponseHelper.Error();
         }
 
-        [HttpDelete("{listTaskId}/kanbantasks/{kanbanTaskId}")]
-        public async Task<IActionResult> DeleteKanbanTask(ObjectId projectId, ObjectId listTaskId, ObjectId kanbanTaskId)
+        [HttpDelete("columns/{columnId}/tasks/{taskId}")]
+        public async Task<IActionResult> DeleteTask(ObjectId projectId, ObjectId columnId, ObjectId taskId)
         {
-            var result = await _kanbanBoardService.DeleteKanbanTask(projectId, listTaskId, kanbanTaskId);
+            var result = await _kanbanBoardService.DeleteTask(projectId, columnId, taskId);
 
             return result.Success
                 ? ResponseHelper.Ok(result.Data)
                 : ResponseHelper.Error();
         }
 
-        [HttpPut("kanbantasks/move")]
-        public async Task<IActionResult> ChangePositionToTask([FromQuery] ObjectId projectId, [FromBody] KanbanTaskMoveEventDTO moveTaskEventDTO)
+        [HttpPut("tasks/move")]
+        public async Task<IActionResult> ChangePositionToTask([FromQuery] ObjectId projectId, [FromBody] TaskMoveEventDTO moveTaskEventDTO)
         {
-            var result = await _kanbanBoardService.MoveKanbanTask(projectId, moveTaskEventDTO);
+            var result = await _kanbanBoardService.MoveTask(projectId, moveTaskEventDTO);
 
             return result.Success
                 ? ResponseHelper.Ok(result.Data)
                 : ResponseHelper.Error();
         }
 
-        [HttpPut("listtasks/move")]
-        public async Task<IActionResult> ChangePositionToListTask([FromQuery] ObjectId projectId, [FromBody] ListTaskMoveEventDTO moveListTaskEventDTO)
+        [HttpPut("columns/move")]
+        public async Task<IActionResult> ChangePositionToColumn([FromQuery] ObjectId projectId, [FromBody] ColumnMoveEventDTO moveColumnEventDTO)
         {
-            var result = await _kanbanBoardService.MoveListTask(projectId, moveListTaskEventDTO);
+            var result = await _kanbanBoardService.MoveColumn(projectId, moveColumnEventDTO);
 
             return result.Success
                 ? ResponseHelper.Ok(result.Data)

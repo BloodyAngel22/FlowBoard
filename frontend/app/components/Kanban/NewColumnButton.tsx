@@ -68,7 +68,7 @@ export default function NewColumnButton({
     <>
       <Dialog>
         <DialogTrigger asChild>
-          <Button>
+          <Button className="create-button">
             <Plus className="h-5 w-5" />
             <span>{isPending ? "Создание..." : "Добавить колонку"}</span>
           </Button>
@@ -105,11 +105,11 @@ export default function NewColumnButton({
             )}
             <DialogFooter className="justify-end">
               <DialogClose asChild>
-                <Button type="button" variant="secondary" ref={dialogCloseRef}>
+                <Button type="button" variant="secondary" ref={dialogCloseRef} className="close-button">
                   Закрыть
                 </Button>
               </DialogClose>
-              <Button type="submit" disabled={!isValid || isPending}>
+              <Button type="submit" disabled={!isValid || isPending} className="save-button">
                 {isPending ? "Сохранение..." : "Сохранить"}
               </Button>
             </DialogFooter>

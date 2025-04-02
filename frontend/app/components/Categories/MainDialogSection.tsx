@@ -31,7 +31,7 @@ export function MainDialogSection() {
         </div>
         <DialogFooter>
           <DialogClose asChild>
-            <Button>Закрыть</Button>
+            <Button className="close-button">Закрыть</Button>
           </DialogClose>
         </DialogFooter>
       </DialogContent>

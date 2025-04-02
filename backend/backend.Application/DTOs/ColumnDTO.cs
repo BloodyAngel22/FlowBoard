@@ -8,14 +8,14 @@ using MongoDB.Bson;
 
 namespace backend.Application.DTOs
 {
-    public class ListTaskDTO
+    public class ColumnDTO
     {
         public required string Name { get; set; }
         public required int Position { get; set; }
         public required bool IsFinished { get; set; } = false;
     }
 
-    public class ListTaskResponseWithoutTasks
+    public class ColumnResponseWithoutTasks
     {
         [JsonConverter(typeof(ObjectIdToStringConverter))]
         public required ObjectId Id { get; set; }
@@ -24,7 +24,7 @@ namespace backend.Application.DTOs
         public required bool IsFinished { get; set; }
     }
 
-    public class ListTaskMoveEventDTO
+    public class ColumnMoveEventDTO
     {
         public required string ColumnId { get; set; }
         public required int FromPosition { get; set; }

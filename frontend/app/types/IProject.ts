@@ -1,4 +1,4 @@
-import { IListTasks } from "./IListTasks";
+import { IColumn } from "./IColumn";
 
 export interface IProjectResponse {
   success: boolean;
@@ -30,5 +30,5 @@ export interface IProjectFull {
   id: string;
   name: string;
   description?: string;
-  listTasks: IListTasks[];
+  columns: IColumn[];
 }

@@ -10,7 +10,7 @@ using MongoDB.Bson.Serialization.Attributes;
 
 namespace backend.Application.DTOs
 {
-    public class KanbanTaskDTO
+    public class TaskDTO
     {
         public required string Name { get; set; }
         public Priority Priority { get; set; } = Priority.Medium;
@@ -23,7 +23,7 @@ namespace backend.Application.DTOs
         public ObjectId? CategoryId { get; set; }
     }
 
-    public class KanbanTaskMoveEventDTO
+    public class TaskMoveEventDTO
     {
         public required string TaskId { get; set; }
         public required int FromPosition { get; set; }

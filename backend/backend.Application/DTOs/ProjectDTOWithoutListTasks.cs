@@ -9,7 +9,7 @@ using MongoDB.Bson.Serialization.Attributes;
 
 namespace backend.Application.DTOs
 {
-    public class ProjectDTOWithoutListTasks
+    public class ProjectDTOWithoutColumns
     {
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]

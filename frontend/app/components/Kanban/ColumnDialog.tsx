@@ -130,7 +130,7 @@ function ColumnDialogContent({ projectId, columnId, onClose }: { projectId: stri
             </div>
           )}
           <DialogFooter className="gap-2">
-            <Button onClick={onClose} disabled={isUpdating || isDeleting}>
+            <Button onClick={onClose} disabled={isUpdating || isDeleting} className="close-button">
               Закрыть
             </Button>
             <AlertDelete
@@ -145,6 +145,7 @@ function ColumnDialogContent({ projectId, columnId, onClose }: { projectId: stri
             <Button
               type="submit"
               disabled={!isValid || isUpdating || isDeleting}
+              className="save-button"
             >
               {isUpdating ? "Сохранение..." : "Сохранить"}
             </Button>

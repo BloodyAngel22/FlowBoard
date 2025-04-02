@@ -42,7 +42,12 @@ export function DataTable<TData, TValue>({
       globalFilter,
     },
     onGlobalFilterChange: setGlobalFilter,
-    globalFilterFn: "includesString",
+    globalFilterFn: (row, columnId, filterValue) => {
+      const name = String(row.getValue("name") || "").toLocaleLowerCase();
+      const description = String(row.getValue("description") || "").toLocaleLowerCase();
+      const searchValue = String(filterValue).toLocaleLowerCase();
+      return name.includes(searchValue) || description.includes(searchValue);
+    },
     initialState: {
       pagination: {
         pageSize: 5,
@@ -118,7 +123,7 @@ export function DataTable<TData, TValue>({
                     colSpan={columns.length}
                     className="h-24 text-center text-zinc-500 dark:text-zinc-400"
                   >
-                    No results.
+                    Нет данных.
                   </TableCell>
                 </TableRow>
               )}

@@ -96,12 +96,12 @@ export default function NewProjectSection() {
                 variant="outline"
                 onClick={() => setIsOpen(false)}
                 disabled={isPending}
-                className="dark:bg-zinc-800 dark:hover:bg-zinc-900 transition-colors duration-200 cursor-pointer"
+                className="close-button"
               >
                 Отменить
               </Button>
               <Button
-                className="dark:bg-zinc-300 dark:hover:bg-zinc-100 transition-colors duration-200 cursor-pointer"
+                className="create-button"
                 type="submit"
                 disabled={!isValid || isPending}
               >

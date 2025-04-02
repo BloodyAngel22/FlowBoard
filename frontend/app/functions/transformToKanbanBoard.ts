@@ -2,12 +2,12 @@ import { IProjectFull } from "../types/IProject";
 import { MyKanbanBoard } from "../types/TKanban";
 
 export const transformToKanbanBoard = (data: IProjectFull): MyKanbanBoard => {
-  if (!data?.listTasks || data.listTasks.length === 0) {
+  if (!data?.columns || data.columns.length === 0) {
     return { columns: [] };
   }
 
   return {
-    columns: data.listTasks.map((list) => ({
+    columns: data.columns.map((list) => ({
       id: list.id,
       title: list.name,
       metadata: {

@@ -2,7 +2,7 @@ import { create } from "zustand";
 
 interface KanbanButton {
   newTaskButton: {
-    listTaskId: string;
+    columnId: string;
     position: number;
     disabled: boolean;
   };
@@ -10,7 +10,7 @@ interface KanbanButton {
     lastColumnPosition: number;
   };
   setNewTaskButton: (
-    listTaskId: string,
+    columnId: string,
     position: number,
     disabled: boolean
   ) => void;
@@ -19,7 +19,7 @@ interface KanbanButton {
 
 export const useKanbanButton = create<KanbanButton>((set) => ({
   newTaskButton: {
-    listTaskId: "",
+    columnId: "",
     position: -1,
     disabled: true,
   },
@@ -27,13 +27,13 @@ export const useKanbanButton = create<KanbanButton>((set) => ({
     lastColumnPosition: 0,
   },
   setNewTaskButton: (
-    listTaskId: string,
+    columnId: string,
     position: number,
     disabled: boolean
   ) => {
     set({
       newTaskButton: {
-        listTaskId: listTaskId,
+        columnId: columnId,
         position: position,
         disabled: disabled,
       },

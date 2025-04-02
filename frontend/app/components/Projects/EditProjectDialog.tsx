@@ -107,14 +107,14 @@ export default function EditProjectDialog({ project }: EditProjectDialogProps) {
               variant="outline"
               onClick={() => handleDialogClose(false)}
               disabled={isPending}
-              className="border-zinc-200 dark:border-zinc-800 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-900"
+              className="close-button"
             >
               Отменить
             </Button>
             <Button
               type="submit"
               disabled={!isValid || isPending}
-              className="bg-zinc-800 hover:bg-zinc-700 dark:bg-zinc-300 dark:hover:bg-zinc-100"
+              className="save-button"
             >
               {isPending ? "Сохранение..." : "Сохранить"}
             </Button>

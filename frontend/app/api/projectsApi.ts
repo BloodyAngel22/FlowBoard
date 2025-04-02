@@ -1,4 +1,4 @@
-import { IProject, IProjectFullResponse, IProjectModifyRequest, IProjectResponse } from "../types/IProject";
+import { IProjectFullResponse, IProjectModifyRequest, IProjectResponse } from "../types/IProject";
 
 class projectsApi {
   private url = `https://localhost:7148/api/KanbanProjects`;

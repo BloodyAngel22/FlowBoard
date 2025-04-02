@@ -22,24 +22,24 @@ import { useCategories } from "@/app/hooks/useCategories";
 import { categoriesApiInstance } from "@/app/api/categoriesApi";
 import { useProjectId } from "@/app/stores/useProjectId";
 import { useCreateTask } from "@/app/hooks/useTasks";
-import { IKanbanTaskModifyRequest } from "@/app/types/IKanbanTask";
+import { ITaskModifyRequest } from "@/app/types/ITask";
 import { Plus } from "lucide-react";
 
 interface NewTaskButtonProps {
-  listTaskId: string;
+  columnId: string;
   position: number;
   disabled: boolean;
 }
 
 export default function NewTaskButton({
-  listTaskId,
+  columnId,
   position,
   disabled,
 }: NewTaskButtonProps) {
   const { projectId } = useProjectId();
   const { mutate, isPending, isError, error } = useCreateTask(
     projectId,
-    listTaskId
+    columnId
   );
 
   const {
@@ -68,7 +68,7 @@ export default function NewTaskButton({
     // console.log(newTask);
 
     if (isValid) {
-      const newTask: IKanbanTaskModifyRequest = {
+      const newTask: ITaskModifyRequest = {
         name: formData.name,
         priority: formData.priority,
         position: position + 1,
@@ -90,7 +90,7 @@ export default function NewTaskButton({
     <>
       <Dialog>
         <DialogTrigger asChild>
-          <Button disabled={disabled}>
+          <Button disabled={disabled} className="create-button">
             <Plus className="h-5 w-5" />
             <span>{isPending ? "Создание..." : "Добавить задачу"}</span>
           </Button>
@@ -160,11 +160,11 @@ export default function NewTaskButton({
             )}
             <DialogFooter className="gap-2">
               <DialogClose asChild>
-                <Button type="button" variant="secondary" ref={dialogCloseRef}>
+                <Button type="button" variant="secondary" ref={dialogCloseRef} className="close-button">
                   Закрыть
                 </Button>
               </DialogClose>
-              <Button type="submit" disabled={!isValid || isPending}>
+              <Button type="submit" disabled={!isValid || isPending} className="save-button">
                 {isPending ? "Сохранение..." : "Сохранить"}
               </Button>
             </DialogFooter>

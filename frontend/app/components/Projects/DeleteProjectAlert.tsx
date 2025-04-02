@@ -62,14 +62,14 @@ export default function DeleteProjectAlert({ projectId }: DeleteProjectAlertProp
         <AlertDialogFooter className="gap-2">
           <AlertDialogCancel
             disabled={isPending}
-            className="border-zinc-200 dark:border-zinc-800 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800"
+            className="close-button"
           >
             Отменить
           </AlertDialogCancel>
           <AlertDialogAction
             onClick={handleDelete}
             disabled={isPending}
-            className="bg-red-600 hover:bg-red-700 dark:bg-red-700 dark:hover:bg-red-600 text-white"
+            className="alert-delete"
           >
             {isPending ? "Удаление..." : "Удалить"}
           </AlertDialogAction>

@@ -45,7 +45,7 @@ export default function AlertDelete<TData = any>({
       <AlertDialogTrigger asChild>
         <Button
           variant="outline"
-          className="border-red-200 bg-red-50 text-red-600 hover:bg-red-100 hover:text-red-700 dark:border-red-900 dark:bg-red-950/50 dark:text-red-400 dark:hover:bg-red-900/50 dark:hover:text-red-300"
+          className="delete-button"
         >
           <Trash2 className="h-4 w-4" />
           Удалить
@@ -69,7 +69,7 @@ export default function AlertDelete<TData = any>({
           <AlertDialogCancel>Отменить</AlertDialogCancel>
           <AlertDialogAction
             onClick={handleDelete}
-            className="bg-red-600 text-white hover:bg-red-700 dark:bg-red-700 dark:hover:bg-red-600"
+            className="alert-delete"
           >
             {isPending ? "Удаление..." : "Удалить"}
           </AlertDialogAction>

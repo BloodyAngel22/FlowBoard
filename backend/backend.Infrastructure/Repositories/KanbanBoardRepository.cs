@@ -3,9 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using backend.Core.IRepositories;
-using backend.Core.Models;
 using MongoDB.Bson;
 using MongoDB.Driver;
+
+using MProject = backend.Core.Models.Project;
+using MColumn = backend.Core.Models.Column;
+using MTask = backend.Core.Models.Task;
 
 namespace backend.Infrastructure.Repositories
 {
@@ -13,186 +16,186 @@ namespace backend.Infrastructure.Repositories
     {
         private readonly AppDbContext _context = context;
 
-        private async Task<Project> GetProjectById(ObjectId projectId)
+        private async Task<MProject> GetProjectById(ObjectId projectId)
         {
             var project = await _context.Projects
                 .Find(project => project.Id == projectId)
-                .FirstOrDefaultAsync() ?? throw new Exception("Project not found");
+                .FirstOrDefaultAsync() ?? throw new Exception("MProject not found");
 
             return project;
         }
 
-        private ListTask GetListTaskByProject(ref Project project, ObjectId listTaskId)
+        private MColumn GetColumnByProject(ref MProject project, ObjectId columnId)
         {
-            var listTask = project.ListTasks
-                .Find(listTask => listTask.Id == listTaskId) ?? throw new Exception("ListTask not found");
+            var column = project.Columns
+                .Find(column => column.Id == columnId) ?? throw new Exception("Column not found");
 
-            return listTask;
+            return column;
         }
 
-        private KanbanTask GetKanbanTaskByProject(ref Project project, ObjectId listTaskId, ObjectId kanbanTaskId)
+        private MTask GetTaskByProject(ref MProject project, ObjectId columnId, ObjectId taskId)
         {
-            var listTask = GetListTaskByProject(ref project, listTaskId);
+            var column = GetColumnByProject(ref project, columnId);
 
-            var kanbanTask = listTask.Tasks
-                .Find(kanbanTask => kanbanTask.Id == kanbanTaskId) ?? throw new Exception("KanbanTask not found");
+            var task = column.Tasks
+                .Find(task => task.Id == taskId) ?? throw new Exception("task not found");
 
-            return kanbanTask;
+            return task;
         }
 
-        public async Task<ListTask> GetListTaskById(ObjectId projectId, ObjectId id)
+        public async Task<MColumn> GetColumnById(ObjectId projectId, ObjectId id)
         {
             var project = await GetProjectById(projectId);
 
-            var listTask = GetListTaskByProject(ref project, id);
+            var column = GetColumnByProject(ref project, id);
 
-            return listTask;
+            return column;
         }
 
-        public async Task<ListTask> CreateListTasks(ObjectId projectId, ListTask listTask)
+        public async Task<MColumn> CreateColumn(ObjectId projectId, MColumn column)
         {
             var project = await GetProjectById(projectId);
 
-            project.ListTasks.Add(listTask);
+            project.Columns.Add(column);
 
             await _context.Projects.ReplaceOneAsync(project => project.Id == projectId, project);
 
-            return listTask;
+            return column;
         }
 
-        public async Task DeleteListTasks(ObjectId projectId, ObjectId id)
-        {
-            var project = await GetProjectById(projectId); 
-
-            var listTask = GetListTaskByProject(ref project, id);
-
-            project.ListTasks.Remove(listTask);
-
-            await _context.Projects.ReplaceOneAsync(project => project.Id == projectId, project);
-        }
-
-        public async Task UpdateListTasks(ObjectId projectId, ObjectId id, ListTask listTask)
+        public async Task DeleteColumn(ObjectId projectId, ObjectId id)
         {
             var project = await GetProjectById(projectId);
 
-            var listTaskToUpdate = GetListTaskByProject(ref project, id);
+            var column = GetColumnByProject(ref project, id);
 
-            listTaskToUpdate.Name = listTask.Name;
-            listTaskToUpdate.Position = listTask.Position;
-            listTaskToUpdate.IsFinished = listTask.IsFinished;
+            project.Columns.Remove(column);
 
             await _context.Projects.ReplaceOneAsync(project => project.Id == projectId, project);
         }
 
-        public async Task<KanbanTask> GetKanbanTask(ObjectId projectId, ObjectId listTaskId, ObjectId kanbanTaskId)
+        public async Task UpdateColumn(ObjectId projectId, ObjectId id, MColumn column)
         {
             var project = await GetProjectById(projectId);
 
-            var kanbanTask = GetKanbanTaskByProject(ref project, listTaskId, kanbanTaskId);
-            
-            return kanbanTask;
-        }
+            var columnToUpdate = GetColumnByProject(ref project, id);
 
-        public async Task CreateKanbanTask(ObjectId projectId, ObjectId listTaskId, KanbanTask kanbanTask)
-        {
-            var project = await GetProjectById(projectId);
-
-            var listTask = GetListTaskByProject(ref project, listTaskId);
-
-            listTask.Tasks.Add(kanbanTask);
+            columnToUpdate.Name = column.Name;
+            columnToUpdate.Position = column.Position;
+            columnToUpdate.IsFinished = column.IsFinished;
 
             await _context.Projects.ReplaceOneAsync(project => project.Id == projectId, project);
         }
 
-        public async Task UpdateKanbanTask(ObjectId projectId, ObjectId listTaskId, ObjectId kanbanTaskId, KanbanTask kanbanTask)
+        public async Task<MTask> GetTask(ObjectId projectId, ObjectId columnId, ObjectId taskId)
         {
             var project = await GetProjectById(projectId);
 
-            var listTask = GetListTaskByProject(ref project, listTaskId);
+            var task = GetTaskByProject(ref project, columnId, taskId);
 
-            var kanbanTaskToUpdate = GetKanbanTaskByProject(ref project, listTaskId, kanbanTaskId);
+            return task;
+        }
 
-            kanbanTaskToUpdate.Name = kanbanTask.Name;
-            kanbanTaskToUpdate.Position = kanbanTask.Position;
-            kanbanTaskToUpdate.Description = kanbanTask.Description;
-            kanbanTaskToUpdate.StartDate = kanbanTask.StartDate;
-            kanbanTaskToUpdate.EndDate = kanbanTask.EndDate;
-            kanbanTaskToUpdate.CategoryId = kanbanTask.CategoryId;
-            kanbanTaskToUpdate.Priority = kanbanTask.Priority;
+        public async Task CreateTask(ObjectId projectId, ObjectId columnId, MTask task)
+        {
+            var project = await GetProjectById(projectId);
+
+            var column = GetColumnByProject(ref project, columnId);
+
+            column.Tasks.Add(task);
 
             await _context.Projects.ReplaceOneAsync(project => project.Id == projectId, project);
         }
 
-        public async Task DeleteKanbanTask(ObjectId projectId, ObjectId listTaskId, ObjectId kanbanTaskId)
+        public async Task UpdateTask(ObjectId projectId, ObjectId columnId, ObjectId taskId, MTask task)
         {
             var project = await GetProjectById(projectId);
 
-            var listTask = GetListTaskByProject(ref project, listTaskId);
+            var column = GetColumnByProject(ref project, columnId);
 
-            var kanbanTaskToDelete = GetKanbanTaskByProject(ref project, listTaskId, kanbanTaskId);
+            var taskToUpdate = GetTaskByProject(ref project, columnId, taskId);
 
-            listTask.Tasks.Remove(kanbanTaskToDelete);
+            taskToUpdate.Name = task.Name;
+            taskToUpdate.Position = task.Position;
+            taskToUpdate.Description = task.Description;
+            taskToUpdate.StartDate = task.StartDate;
+            taskToUpdate.EndDate = task.EndDate;
+            taskToUpdate.CategoryId = task.CategoryId;
+            taskToUpdate.Priority = task.Priority;
 
             await _context.Projects.ReplaceOneAsync(project => project.Id == projectId, project);
         }
 
-        public async Task<KanbanTask> GetKanbanTaskByPosition(ObjectId projectId, ObjectId listTaskId, int position)
+        public async Task DeleteTask(ObjectId projectId, ObjectId columnId, ObjectId taskId)
         {
             var project = await GetProjectById(projectId);
 
-            var listTask = GetListTaskByProject(ref project, listTaskId);
+            var column = GetColumnByProject(ref project, columnId);
 
-            var kanbanTask = GetKanbanTaskByProject(ref project, listTaskId, listTask.Tasks[position].Id);
-            
-            return kanbanTask;
-        }
+            var taskToDelete = GetTaskByProject(ref project, columnId, taskId);
 
-        public async Task ChangePositionToTask(ObjectId projectId, ObjectId listTaskId, ObjectId kanbanTaskId, int position)
-        {
-            var project = await GetProjectById(projectId);
-
-            var kanbanTask = GetKanbanTaskByProject(ref project, listTaskId, kanbanTaskId);
-
-            kanbanTask.Position = position;
-
-            await UpdateKanbanTask(projectId, listTaskId, kanbanTaskId, kanbanTask);
-        }
-
-        public async Task ChangePositionToTaskInOtherColumn(ObjectId projectId, ObjectId currentListTaskId, ObjectId newListTaskId, ObjectId kanbanTaskId, int position)
-        {
-            var project = await GetProjectById(projectId);
-
-            var kanbanTask = GetKanbanTaskByProject(ref project, currentListTaskId, kanbanTaskId);
-
-            var currentListTask = GetListTaskByProject(ref project, currentListTaskId);
-
-            currentListTask.Tasks.Remove(kanbanTask);
-
-            var newListTask = GetListTaskByProject(ref project, newListTaskId);
-
-            newListTask.Tasks.Insert(position, kanbanTask);
-
-            kanbanTask.Position = position;
+            column.Tasks.Remove(taskToDelete);
 
             await _context.Projects.ReplaceOneAsync(project => project.Id == projectId, project);
         }
 
-        public async Task ChangePositionToColumn(ObjectId projectId, ObjectId listTaskId, int position)
+        public async Task<MTask> GetTaskByPosition(ObjectId projectId, ObjectId columnId, int position)
         {
             var project = await GetProjectById(projectId);
 
-            var listTask = GetListTaskByProject(ref project, listTaskId);
+            var column = GetColumnByProject(ref project, columnId);
 
-            listTask.Position = position;
+            var task = GetTaskByProject(ref project, columnId, column.Tasks[position].Id);
+
+            return task;
+        }
+
+        public async Task ChangePositionToTask(ObjectId projectId, ObjectId columnId, ObjectId taskId, int position)
+        {
+            var project = await GetProjectById(projectId);
+
+            var task = GetTaskByProject(ref project, columnId, taskId);
+
+            task.Position = position;
+
+            await UpdateTask(projectId, columnId, taskId, task);
+        }
+
+        public async Task ChangePositionToTaskInOtherColumn(ObjectId projectId, ObjectId currentColumnId, ObjectId newColumnId, ObjectId taskId, int position)
+        {
+            var project = await GetProjectById(projectId);
+
+            var task = GetTaskByProject(ref project, currentColumnId, taskId);
+
+            var currentColumn = GetColumnByProject(ref project, currentColumnId);
+
+            currentColumn.Tasks.Remove(task);
+
+            var newColumn = GetColumnByProject(ref project, newColumnId);
+
+            newColumn.Tasks.Insert(position, task);
+
+            task.Position = position;
 
             await _context.Projects.ReplaceOneAsync(project => project.Id == projectId, project);
         }
 
-        public async Task<List<ListTask>> GetListTasks(ObjectId projectId)
+        public async Task ChangePositionToColumn(ObjectId projectId, ObjectId columnId, int position)
         {
             var project = await GetProjectById(projectId);
 
-            return project.ListTasks;
+            var column = GetColumnByProject(ref project, columnId);
+
+            column.Position = position;
+
+            await _context.Projects.ReplaceOneAsync(project => project.Id == projectId, project);
+        }
+
+        public async Task<List<MColumn>> GetColumns(ObjectId projectId)
+        {
+            var project = await GetProjectById(projectId);
+
+            return project.Columns;
         }
     }
 }

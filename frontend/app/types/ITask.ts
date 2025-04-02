@@ -1,4 +1,4 @@
-export interface IKanbanTask {
+export interface ITask {
   id: string;
   name: string;
   priority: number;
@@ -9,17 +9,17 @@ export interface IKanbanTask {
   categoryId?: string;
 }
 
-export interface IKanbanTaskResponse {
+export interface ITaskResponse {
   success: boolean;
-  data: IKanbanTask;
+  data: ITask;
 }
 
-export interface IKanbanTaskModifyResponse {
+export interface ITaskModifyResponse {
   success: boolean;
   data: string;
 }
 
-export interface IKanbanTaskModifyRequest {
+export interface ITaskModifyRequest {
   name: string;
   priority: number;
   position: number;

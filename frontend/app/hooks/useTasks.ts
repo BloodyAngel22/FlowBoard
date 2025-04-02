@@ -2,33 +2,33 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   ICardMoveRequest,
   ICardMoveResponse,
-  IKanbanTaskModifyRequest,
-  IKanbanTaskModifyResponse,
-  IKanbanTaskResponse,
-} from "../types/IKanbanTask";
-import { tasksApiInstance } from "../api/tasksApi";
+  ITaskModifyRequest,
+  ITaskModifyResponse,
+  ITaskResponse,
+} from "../types/ITask";
+import { tasksApiInstance } from "../api/kanbanApi";
 
 export const useTask = (
   projectId: string,
-  listTaskId: string,
-  kanbanTaskId: string
+  columnId: string,
+  taskId: string
 ) => {
-  return useQuery<IKanbanTaskResponse, Error>({
-    queryKey: ["task", projectId, listTaskId, kanbanTaskId],
+  return useQuery<ITaskResponse, Error>({
+    queryKey: ["task", projectId, columnId, taskId],
     queryFn: () =>
-      tasksApiInstance.getTask(projectId, listTaskId, kanbanTaskId),
+      tasksApiInstance.getTask(projectId, columnId, taskId),
     staleTime: 1000 * 60, // 1 minute
-    enabled: !!projectId && !!listTaskId && !!kanbanTaskId,
+    enabled: !!projectId && !!columnId && !!taskId,
     retry: 1,
   });
 };
 
-export const useCreateTask = (projectId: string, listTaskId: string) => {
+export const useCreateTask = (projectId: string, columnId: string) => {
   const queryClient = useQueryClient();
 
-  return useMutation<IKanbanTaskModifyResponse, Error, IKanbanTaskModifyRequest>({
-    mutationFn: (kanbanTask: IKanbanTaskModifyRequest) =>
-      tasksApiInstance.createTask(projectId, listTaskId, kanbanTask),
+  return useMutation<ITaskModifyResponse, Error, ITaskModifyRequest>({
+    mutationFn: (task: ITaskModifyRequest) =>
+      tasksApiInstance.createTask(projectId, columnId, task),
     onSuccess: (response) => {
       queryClient.invalidateQueries({
         queryKey: ["project", projectId],
@@ -41,19 +41,19 @@ export const useCreateTask = (projectId: string, listTaskId: string) => {
   });
 };
 
-export const useUpdateTask = (projectId: string, listTaskId: string, kanbanTaskId: string) => {
+export const useUpdateTask = (projectId: string, columnId: string, taskId: string) => {
   const queryClient = useQueryClient();
 
-  if (!listTaskId || !kanbanTaskId) {
-    console.error("listTaskId or kanbanTaskId is missing:", { listTaskId, kanbanTaskId });
+  if (!columnId || !taskId) {
+    console.error("columnId or taskId is missing:", { columnId, taskId });
   }
 
-  return useMutation<IKanbanTaskModifyResponse, Error, IKanbanTaskModifyRequest>({
-    mutationFn: (kanbanTask: IKanbanTaskModifyRequest) =>
-      tasksApiInstance.updateTask(projectId, listTaskId, kanbanTaskId, kanbanTask),
+  return useMutation<ITaskModifyResponse, Error, ITaskModifyRequest>({
+    mutationFn: (task: ITaskModifyRequest) =>
+      tasksApiInstance.updateTask(projectId, columnId, taskId, task),
     onSuccess: (response) => {
       queryClient.invalidateQueries({
-        queryKey: ["task", projectId, listTaskId, kanbanTaskId],
+        queryKey: ["task", projectId, columnId, taskId],
       })
       queryClient.invalidateQueries({
         queryKey: ["project", projectId],
@@ -66,16 +66,16 @@ export const useUpdateTask = (projectId: string, listTaskId: string, kanbanTaskI
   });
 };
 
-export const useDeleteTask = (projectId: string, listTaskId: string, kanbanTaskId: string) => {
+export const useDeleteTask = (projectId: string, columnId: string, taskId: string) => {
   const queryClient = useQueryClient();
 
-  if (!projectId || !listTaskId || !kanbanTaskId) {
-    console.error("projectId, listTaskId or kanbanTaskId is missing:", { projectId, listTaskId, kanbanTaskId });
+  if (!projectId || !columnId || !taskId) {
+    console.error("projectId, columnId or taskId is missing:", { projectId, columnId, taskId });
   }
 
-  return useMutation<IKanbanTaskModifyResponse, Error>({
+  return useMutation<ITaskModifyResponse, Error>({
     mutationFn: () =>
-      tasksApiInstance.deleteTask(projectId, listTaskId, kanbanTaskId),
+      tasksApiInstance.deleteTask(projectId, columnId, taskId),
     onSuccess: (response) => {
       queryClient.invalidateQueries({
         queryKey: ["project", projectId],

@@ -5,19 +5,19 @@ import {
 } from "../types/IColumn";
 import {
   ICardMoveRequest,
-  IKanbanTaskModifyRequest,
-  IKanbanTaskModifyResponse,
-  IKanbanTaskResponse,
-} from "../types/IKanbanTask";
+  ITaskModifyRequest,
+  ITaskModifyResponse,
+  ITaskResponse,
+} from "@/app/types/ITask";
 
 class kanbanApi {
   private url = `https://localhost:7148/api/KanbanBoard`;
 
   public async getTask(
     projectId: string,
-    listTaskId: string,
-    kanbanTaskId: string
-  ): Promise<IKanbanTaskResponse> {
+    columnId: string,
+    taskId: string
+  ): Promise<ITaskResponse> {
     try {
       const queryParams = new URLSearchParams();
       queryParams.set("projectId", projectId);
@@ -25,7 +25,7 @@ class kanbanApi {
       const response = await fetch(
         `${
           this.url
-        }/${listTaskId}/kanbantasks/${kanbanTaskId}?${queryParams.toString()}`,
+        }/columns/${columnId}/tasks/${taskId}?${queryParams.toString()}`,
         {
           method: "GET",
           headers: {
@@ -48,21 +48,21 @@ class kanbanApi {
 
   public async createTask(
     projectId: string,
-    listTaskId: string,
-    kanbanTask: IKanbanTaskModifyRequest
-  ): Promise<IKanbanTaskModifyResponse> {
+    columnId: string,
+    task: ITaskModifyRequest
+  ): Promise<ITaskModifyResponse> {
     try {
       const queryParams = new URLSearchParams();
       queryParams.set("projectId", projectId);
 
       const response = await fetch(
-        `${this.url}/${listTaskId}/kanbantasks?${queryParams.toString()}`,
+        `${this.url}/columns/${columnId}/tasks?${queryParams.toString()}`,
         {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify(kanbanTask),
+          body: JSON.stringify(task),
         }
       );
 
@@ -80,10 +80,10 @@ class kanbanApi {
 
   public async updateTask(
     projectId: string,
-    listTaskId: string,
-    kanbanTaskId: string,
-    kanbanTask: IKanbanTaskModifyRequest
-  ): Promise<IKanbanTaskModifyResponse> {
+    columnId: string,
+    taskId: string,
+    task: ITaskModifyRequest
+  ): Promise<ITaskModifyResponse> {
     try {
       const queryParams = new URLSearchParams();
       queryParams.set("projectId", projectId);
@@ -91,13 +91,13 @@ class kanbanApi {
       const response = await fetch(
         `${
           this.url
-        }/${listTaskId}/kanbantasks/${kanbanTaskId}?${queryParams.toString()}`,
+        }/columns/${columnId}/tasks/${taskId}?${queryParams.toString()}`,
         {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify(kanbanTask),
+          body: JSON.stringify(task),
         }
       );
 
@@ -115,8 +115,8 @@ class kanbanApi {
 
   public async deleteTask(
     projectId: string,
-    listTaskId: string,
-    kanbanTaskId: string
+    columnId: string,
+    taskId: string
   ) {
     try {
       const queryParams = new URLSearchParams();
@@ -125,7 +125,7 @@ class kanbanApi {
       const response = await fetch(
         `${
           this.url
-        }/${listTaskId}/kanbantasks/${kanbanTaskId}?${queryParams.toString()}`,
+        }/columns/${columnId}/tasks/${taskId}?${queryParams.toString()}`,
         {
           method: "DELETE",
           headers: {
@@ -152,7 +152,7 @@ class kanbanApi {
       queryParams.set("projectId", projectId);
 
       const response = await fetch(
-        `${this.url}/${columnId}?${queryParams.toString()}`,
+        `${this.url}/columns/${columnId}?${queryParams.toString()}`,
         {
           method: "GET",
           headers: {
@@ -178,7 +178,7 @@ class kanbanApi {
       const queryParams = new URLSearchParams();
       queryParams.set("projectId", projectId);
 
-      const response = await fetch(`${this.url}?${queryParams.toString()}`, {
+      const response = await fetch(`${this.url}/columns?${queryParams.toString()}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -208,7 +208,7 @@ class kanbanApi {
       queryParams.set("projectId", projectId);
 
       const response = await fetch(
-        `${this.url}/${columnId}?${queryParams.toString()}`,
+        `${this.url}/columns/${columnId}?${queryParams.toString()}`,
         {
           method: "PUT",
           headers: {
@@ -236,7 +236,7 @@ class kanbanApi {
       queryParams.set("projectId", projectId);
 
       const response = await fetch(
-        `${this.url}/${columnId}?${queryParams.toString()}`,
+        `${this.url}/columns/${columnId}?${queryParams.toString()}`,
         {
           method: "DELETE",
           headers: {
@@ -260,13 +260,13 @@ class kanbanApi {
   public async moveTask(
     projectId: string,
     moveTask: ICardMoveRequest
-  ): Promise<IKanbanTaskModifyResponse> {
+  ): Promise<ITaskModifyResponse> {
     try {
       const queryParams = new URLSearchParams();
       queryParams.set("projectId", projectId);
 
       const response = await fetch(
-        `${this.url}/kanbantasks/move?${queryParams.toString()}`,
+        `${this.url}/tasks/move?${queryParams.toString()}`,
         {
           method: "PUT",
           headers: {
@@ -297,7 +297,7 @@ class kanbanApi {
       queryParams.set("projectId", projectId);
 
       const response = await fetch(
-        `${this.url}/listtasks/move?${queryParams.toString()}`,
+        `${this.url}/columns/move?${queryParams.toString()}`,
         {
           method: "PUT",
           headers: {

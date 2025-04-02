@@ -11,17 +11,13 @@ namespace backend.Core.Models;
 
 public class Project
 {
-    // Идентификатор
     [BsonId]
     [BsonRepresentation(BsonType.ObjectId)]
     [JsonConverter(typeof(ObjectIdToStringConverter))]
     public ObjectId Id { get; set; } = ObjectId.GenerateNewId();
-    // Название
     public required string Name { get; set; }
-    // Список списков
-    public List<ListTask> ListTasks { get; set; } = [];
+    public List<Column> Columns { get; set; } = [];
 
-    // Описание
     [BsonIgnoreIfNull]
     public string? Description { get; set; }
 }

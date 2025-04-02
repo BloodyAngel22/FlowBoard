@@ -55,7 +55,7 @@ export default function CategoriesScrollArea() {
                   <DropdownMenuTrigger asChild>
                     <EllipsisVertical className="h-4 w-4 cursor-pointer" />
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent className="w-40 bg-zinc-800 py-1 px-2 rounded-lg text-white">
+                  <DropdownMenuContent className="w-max bg-zinc-800 py-1 px-2 rounded-lg text-white flex flex-col items-start">
                     <DropdownMenuItem asChild>
                       <EditCategoryDialog category={category} />
                     </DropdownMenuItem>

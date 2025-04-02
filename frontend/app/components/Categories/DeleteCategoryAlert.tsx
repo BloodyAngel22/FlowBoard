@@ -71,10 +71,11 @@ export default function DeleteCategoryAlert({ categoryId }: DeleteCategoryAlertP
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel disabled={isPending}>Отменить</AlertDialogCancel>
+          <AlertDialogCancel disabled={isPending} className="close-button">Отменить</AlertDialogCancel>
           <AlertDialogAction
             onClick={handleDelete}
             disabled={isPending || isExistingCategoryId}
+            className="alert-delete"
           >
             {isPending ? "Удаление..." : "Удалить"}
           </AlertDialogAction>

@@ -2,7 +2,6 @@ import {
   ControlledBoardProps,
   OnDragEndNotification,
 } from "@caldwell619/react-kanban/dist/features/board/components/Controlled";
-import { SharedProps } from "@caldwell619/react-kanban/dist/features/board/components/shared";
 import {
   Card,
   Column,

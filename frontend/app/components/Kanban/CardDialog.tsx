@@ -16,7 +16,7 @@ import { useCategories } from "@/app/hooks/useCategories";
 import { categoriesApiInstance } from "@/app/api/categoriesApi";
 import FormInput from "../Forms/FormInput";
 import { useDeleteTask, useTask, useUpdateTask } from "@/app/hooks/useTasks";
-import { IKanbanTaskModifyRequest, IKanbanTaskModifyResponse } from "@/app/types/IKanbanTask";
+import { ITaskModifyRequest, ITaskModifyResponse } from "@/app/types/ITask";
 import AlertDelete from "./AlertDelete";
 import { Loader2 } from "lucide-react";
 
@@ -93,7 +93,7 @@ function CardDialogContent({ projectId, cardId, columnId, onClose }: { projectId
     console.log("Form data:", formData);
 
     if (isValid && data?.data) {
-      const updatedTask: IKanbanTaskModifyRequest = {
+      const updatedTask: ITaskModifyRequest = {
         name: formData.name,
         priority: formData.priority,
         position: data.data.position,
@@ -180,7 +180,7 @@ function CardDialogContent({ projectId, cardId, columnId, onClose }: { projectId
             </div>
           )}
           <DialogFooter className="gap-2">
-            <Button onClick={onClose} disabled={isUpdating}>
+            <Button onClick={onClose} disabled={isUpdating} className="close-button">
               Закрыть
             </Button>
             <AlertDelete
@@ -195,6 +195,7 @@ function CardDialogContent({ projectId, cardId, columnId, onClose }: { projectId
             <Button
               type="submit"
               disabled={!isValid || isUpdating || isDeleting}
+              className="save-button"
             >
               {isUpdating ? "Сохранение..." : "Сохранить"}
             </Button>

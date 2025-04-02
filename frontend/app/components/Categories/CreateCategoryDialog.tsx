@@ -52,7 +52,7 @@ export default function CreateCategoryDialog() {
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
-        <Button variant="outline" onClick={() => setIsOpen(true)}>
+        <Button variant="outline" onClick={() => setIsOpen(true)} className="cursor-pointer">
           <Plus size={16} className="mr-2" />
           Добавить категорию
         </Button>
@@ -78,10 +78,11 @@ export default function CreateCategoryDialog() {
               variant="outline"
               onClick={() => setIsOpen(false)}
               disabled={isPending}
+              className="close-button"
             >
               Отменить
             </Button>
-            <Button type="submit" disabled={!isValid || isPending}>
+            <Button type="submit" disabled={!isValid || isPending} className="create-button">
               {isPending ? "Создание..." : "Создать"}
             </Button>
           </DialogFooter>

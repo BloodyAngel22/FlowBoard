@@ -13,16 +13,14 @@ import {
   moveCard,
   moveColumn,
 } from "@caldwell619/react-kanban/dist/services/helpers";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import CustomColumnHeader from "./CustomColumnHeader";
 import CustomCard from "./CustomCard";
-import NewTaskButton from "./NewTaskButton";
-import NewColumnButton from "./NewColumnButton";
 import CardDialog from "./CardDialog";
 import ColumnDialog from "./ColumnDialog";
 import { useMoveTask } from "@/app/hooks/useTasks";
 import { useProjectId } from "@/app/stores/useProjectId";
-import { ICardMoveRequest } from "@/app/types/IKanbanTask";
+import { ICardMoveRequest } from "@/app/types/ITask";
 import { IColumnMoveRequest } from "@/app/types/IColumn";
 import { useMoveColumn } from "@/app/hooks/useColumns";
 import { useKanbanButton } from "@/app/stores/useKanbanButton";

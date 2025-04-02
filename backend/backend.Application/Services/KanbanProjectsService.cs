@@ -6,9 +6,10 @@ using System.Threading.Tasks;
 using backend.Application.DTOs;
 using backend.Application.Entities;
 using backend.Core.IRepositories;
-using backend.Core.Models;
 using Microsoft.Extensions.Logging;
 using MongoDB.Bson;
+
+using MProject = backend.Core.Models.Project;
 
 namespace backend.Application.Services
 {
@@ -21,36 +22,36 @@ namespace backend.Application.Services
         private readonly IKanbanProjectRepository _kanbanProjectRepository = kanbanProjectRepository;
         private readonly ILogger<KanbanProjectsService> _logger = logger;
 
-        public async Task<ServiceResult<List<ProjectDTOWithoutListTasks>>> GetAllProjects()
+        public async Task<ServiceResult<List<ProjectDTOWithoutColumns>>> GetAllProjects()
         {
             var projects = await _kanbanProjectRepository.GetAllProjects();
 
-            var projectsWithoutListTasks = projects.Select(project => new ProjectDTOWithoutListTasks
+            var projectsWithoutColumns = projects.Select(project => new ProjectDTOWithoutColumns
             {
                 Id = project.Id,
                 Name = project.Name,
                 Description = project.Description
             }).ToList();
 
-            return ServiceResult<List<ProjectDTOWithoutListTasks>>.Ok(projectsWithoutListTasks);
+            return ServiceResult<List<ProjectDTOWithoutColumns>>.Ok(projectsWithoutColumns);
         }
 
-        public async Task<ServiceResult<Project>> GetProject(ObjectId id)
+        public async Task<ServiceResult<MProject>> GetProject(ObjectId id)
         {
             var project = await _kanbanProjectRepository.GetProject(id);
 
             if (project == null)
             {
-                _logger.LogError("Project not found");
-                return ServiceResult<Project>.Fail();
+                _logger.LogError("MProject not found");
+                return ServiceResult<MProject>.Fail();
             }
 
-            return ServiceResult<Project>.Ok(project);
+            return ServiceResult<MProject>.Ok(project);
         }
 
-        public async Task<ServiceResult<Project>> CreateProject(ProjectDTO project)
+        public async Task<ServiceResult<MProject>> CreateProject(ProjectDTO project)
         {
-            var newProject = new Project
+            var newProject = new MProject
             {
                 Name = project.Name,
                 Description = project.Description
@@ -60,18 +61,18 @@ namespace backend.Application.Services
             {
                 var createdProject = await _kanbanProjectRepository.CreateProject(newProject);
 
-                return ServiceResult<Project>.Ok(createdProject);
+                return ServiceResult<MProject>.Ok(createdProject);
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error creating project");
-                return ServiceResult<Project>.Fail();
+                return ServiceResult<MProject>.Fail();
             }
         }
 
         public async Task<ServiceResult<string>> UpdateProject(ObjectId id, ProjectDTO project)
         {
-            var newProject = new Project
+            var newProject = new MProject
             {
                 Id = id,
                 Name = project.Name,
@@ -82,7 +83,7 @@ namespace backend.Application.Services
             {
                 await _kanbanProjectRepository.UpdateProject(id, newProject);
 
-                return ServiceResult<string>.Ok("Project updated successfully");
+                return ServiceResult<string>.Ok("MProject updated successfully");
             }
             catch (Exception ex)
             {
@@ -97,7 +98,7 @@ namespace backend.Application.Services
             {
                 await _kanbanProjectRepository.DeleteProject(id);
 
-                return ServiceResult<string>.Ok("Project deleted successfully");
+                return ServiceResult<string>.Ok("MProject deleted successfully");
             }
             catch (Exception ex)
             {

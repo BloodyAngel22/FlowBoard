@@ -5,9 +5,11 @@ using System.Threading.Tasks;
 using backend.Application.DTOs;
 using backend.Application.Entities;
 using backend.Core.IRepositories;
-using backend.Core.Models;
 using Microsoft.Extensions.Logging;
 using MongoDB.Bson;
+
+using MColumn = backend.Core.Models.Column;
+using MTask = backend.Core.Models.Task;
 
 namespace backend.Application.Services
 {
@@ -20,41 +22,41 @@ namespace backend.Application.Services
         private readonly IKanbanBoardRepository _repository = repository;
         private readonly ILogger<KanbanBoardService> _logger = logger;
 
-        public async Task<ServiceResult<ListTaskResponseWithoutTasks>> GetListInfo(ObjectId projectId, ObjectId id)
+        public async Task<ServiceResult<ColumnResponseWithoutTasks>> GetColumnInfo(ObjectId projectId, ObjectId id)
         {
             try
             {
-                var listTask = await _repository.GetListTaskById(projectId, id);
+                var column = await _repository.GetColumnById(projectId, id);
 
-                var listTaskDTOWithoutTasks = new ListTaskResponseWithoutTasks
+                var columnDTOWithoutTasks = new ColumnResponseWithoutTasks
                 {
-                    Id = listTask.Id,
-                    Name = listTask.Name,
-                    Position = listTask.Position,
-                    IsFinished = listTask.IsFinished
+                    Id = column.Id,
+                    Name = column.Name,
+                    Position = column.Position,
+                    IsFinished = column.IsFinished
                 };
 
-                return ServiceResult<ListTaskResponseWithoutTasks>.Ok(listTaskDTOWithoutTasks);
+                return ServiceResult<ColumnResponseWithoutTasks>.Ok(columnDTOWithoutTasks);
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error getting list task");
-                return ServiceResult<ListTaskResponseWithoutTasks>.Fail();
+                return ServiceResult<ColumnResponseWithoutTasks>.Fail();
             }
         }
 
-        public async Task<ServiceResult<string>> CreateListTask(ObjectId projectId, ListTaskDTO listTaskDTO)
+        public async Task<ServiceResult<string>> CreateColumn(ObjectId projectId, ColumnDTO columnDTO)
         {
             try
             {
-                var listTask = new ListTask
+                var column = new MColumn
                 {
-                    Name = listTaskDTO.Name,
-                    Position = listTaskDTO.Position,
-                    IsFinished = listTaskDTO.IsFinished
+                    Name = columnDTO.Name,
+                    Position = columnDTO.Position,
+                    IsFinished = columnDTO.IsFinished
                 };
 
-                var createdListTask = await _repository.CreateListTasks(projectId, listTask);
+                var createdColumn = await _repository.CreateColumn(projectId, column);
 
                 return ServiceResult<string>.Ok("List task created");
             }
@@ -65,19 +67,19 @@ namespace backend.Application.Services
             }
         }
 
-        public async Task<ServiceResult<string>> UpdateListTask(ObjectId projectId, ObjectId id, ListTaskDTO listTaskDTO)
+        public async Task<ServiceResult<string>> UpdateColumn(ObjectId projectId, ObjectId id, ColumnDTO columnDTO)
         {
             try
             {
-                var listTask = new ListTask
+                var column = new MColumn
                 {
                     Id = id,
-                    Name = listTaskDTO.Name,
-                    Position = listTaskDTO.Position,
-                    IsFinished = listTaskDTO.IsFinished
+                    Name = columnDTO.Name,
+                    Position = columnDTO.Position,
+                    IsFinished = columnDTO.IsFinished
                 };
 
-                await _repository.UpdateListTasks(projectId, id, listTask);
+                await _repository.UpdateColumn(projectId, id, column);
 
                 return ServiceResult<string>.Ok("List task updated");
             }
@@ -88,11 +90,11 @@ namespace backend.Application.Services
             }
         }
 
-        public async Task<ServiceResult<string>> DeleteListTask(ObjectId projectId, ObjectId id)
+        public async Task<ServiceResult<string>> DeleteColumn(ObjectId projectId, ObjectId id)
         {
             try
             {
-                await _repository.DeleteListTasks(projectId, id);
+                await _repository.DeleteColumn(projectId, id);
 
                 return ServiceResult<string>.Ok("List task deleted");
             }
@@ -103,37 +105,37 @@ namespace backend.Application.Services
             }
         }
 
-        public async Task<ServiceResult<KanbanTask>> GetKanbanTask(ObjectId projectId, ObjectId listTaskId, ObjectId kanbanTaskId)
+        public async Task<ServiceResult<MTask>> GetTask(ObjectId projectId, ObjectId columnId, ObjectId taskId)
         {
             try
             {
-                var kanbanTask = await _repository.GetKanbanTask(projectId, listTaskId, kanbanTaskId);
+                var task = await _repository.GetTask(projectId, columnId, taskId);
 
-                return ServiceResult<KanbanTask>.Ok(kanbanTask);
+                return ServiceResult<MTask>.Ok(task);
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error getting kanban task");
-                return ServiceResult<KanbanTask>.Fail();
+                return ServiceResult<MTask>.Fail();
             }
         }
 
-        public async Task<ServiceResult<string>> CreateKanbanTask(ObjectId projectId, ObjectId listTaskId, KanbanTaskDTO kanbanTaskDTO)
+        public async Task<ServiceResult<string>> CreateTask(ObjectId projectId, ObjectId columnId, TaskDTO taskDTO)
         {
             try
             {
-                var kanbanTask = new KanbanTask
+                var task = new MTask
                 {
-                    Name = kanbanTaskDTO.Name,
-                    Priority = kanbanTaskDTO.Priority,
-                    Position = kanbanTaskDTO.Position,
-                    Description = kanbanTaskDTO.Description,
-                    StartDate = kanbanTaskDTO.StartDate,
-                    EndDate = kanbanTaskDTO.EndDate,
-                    CategoryId = kanbanTaskDTO.CategoryId
+                    Name = taskDTO.Name,
+                    Priority = taskDTO.Priority,
+                    Position = taskDTO.Position,
+                    Description = taskDTO.Description,
+                    StartDate = taskDTO.StartDate,
+                    EndDate = taskDTO.EndDate,
+                    CategoryId = taskDTO.CategoryId
                 };
 
-                await _repository.CreateKanbanTask(projectId, listTaskId, kanbanTask);
+                await _repository.CreateTask(projectId, columnId, task);
 
                 return ServiceResult<string>.Ok("Kanban task created");
             }
@@ -144,23 +146,23 @@ namespace backend.Application.Services
             }
         }
 
-        public async Task<ServiceResult<string>> UpdateKanbanTask(ObjectId projectId, ObjectId listTaskId, ObjectId kanbanTaskId, KanbanTaskDTO kanbanTaskDTO)
+        public async Task<ServiceResult<string>> UpdateTask(ObjectId projectId, ObjectId columnId, ObjectId taskId, TaskDTO taskDTO)
         {
             try
             {
-                var kanbanTask = new KanbanTask
+                var task = new MTask
                 {
-                    Id = kanbanTaskId,
-                    Name = kanbanTaskDTO.Name,
-                    Priority = kanbanTaskDTO.Priority,
-                    Position = kanbanTaskDTO.Position,
-                    Description = kanbanTaskDTO.Description,
-                    StartDate = kanbanTaskDTO.StartDate,
-                    EndDate = kanbanTaskDTO.EndDate,
-                    CategoryId = kanbanTaskDTO.CategoryId
+                    Id = taskId,
+                    Name = taskDTO.Name,
+                    Priority = taskDTO.Priority,
+                    Position = taskDTO.Position,
+                    Description = taskDTO.Description,
+                    StartDate = taskDTO.StartDate,
+                    EndDate = taskDTO.EndDate,
+                    CategoryId = taskDTO.CategoryId
                 };
 
-                await _repository.UpdateKanbanTask(projectId, listTaskId, kanbanTaskId, kanbanTask);
+                await _repository.UpdateTask(projectId, columnId, taskId, task);
 
                 return ServiceResult<string>.Ok("Kanban task updated");
             }
@@ -171,22 +173,22 @@ namespace backend.Application.Services
             }
         }
 
-        public async Task<ServiceResult<string>> DeleteKanbanTask(ObjectId projectId, ObjectId listTaskId, ObjectId kanbanTaskId)
+        public async Task<ServiceResult<string>> DeleteTask(ObjectId projectId, ObjectId columnId, ObjectId taskId)
         {
             try
             {
-                var kanbanTask = await _repository.GetKanbanTask(projectId, listTaskId, kanbanTaskId);
+                var task = await _repository.GetTask(projectId, columnId, taskId);
 
-                var tasksInColumn = await _repository.GetListTaskById(projectId, listTaskId);
+                var tasksInColumn = await _repository.GetColumnById(projectId, columnId);
 
-                var tasksToShift = tasksInColumn.Tasks.Where(x => x.Position > kanbanTask.Position).ToList();
+                var tasksToShift = tasksInColumn.Tasks.Where(x => x.Position > task.Position).ToList();
 
-                foreach (var task in tasksToShift)
+                foreach (var taskToShift in tasksToShift)
                 {
-                    await _repository.ChangePositionToTask(projectId, listTaskId, task.Id, task.Position - 1);
+                    await _repository.ChangePositionToTask(projectId, columnId, taskToShift.Id, taskToShift.Position - 1);
                 }
 
-                await _repository.DeleteKanbanTask(projectId, listTaskId, kanbanTaskId);
+                await _repository.DeleteTask(projectId, columnId, taskId);
 
                 return ServiceResult<string>.Ok("Kanban task deleted");
             }
@@ -197,7 +199,7 @@ namespace backend.Application.Services
             }
         }
 
-        public async Task<ServiceResult<string>> MoveKanbanTask(ObjectId projectId, KanbanTaskMoveEventDTO moveTaskEventDTO)
+        public async Task<ServiceResult<string>> MoveTask(ObjectId projectId, TaskMoveEventDTO moveTaskEventDTO)
         {
             try
             {
@@ -207,7 +209,7 @@ namespace backend.Application.Services
 
                 if (moveTaskEventDTO.FromColumnId == moveTaskEventDTO.ToColumnId)
                 {
-                    var tasksInColumn = await _repository.GetListTaskById(projectId, fromColumnId);
+                    var tasksInColumn = await _repository.GetColumnById(projectId, fromColumnId);
 
                     if (moveTaskEventDTO.FromPosition > moveTaskEventDTO.ToPosition)
                     {
@@ -234,7 +236,7 @@ namespace backend.Application.Services
                 }
                 else
                 {
-                    var tasksInFromColumn = await _repository.GetListTaskById(projectId, fromColumnId);
+                    var tasksInFromColumn = await _repository.GetColumnById(projectId, fromColumnId);
 
                     var tasksToShiftFrom = tasksInFromColumn.Tasks.Where(task =>
                         task.Position > moveTaskEventDTO.FromPosition
@@ -245,7 +247,7 @@ namespace backend.Application.Services
                         await _repository.ChangePositionToTask(projectId, fromColumnId, task.Id, task.Position - 1);
                     }
 
-                    var tasksInToColumn = await _repository.GetListTaskById(projectId, toColumnId);
+                    var tasksInToColumn = await _repository.GetColumnById(projectId, toColumnId);
 
                     var tasksToShiftTo = tasksInToColumn.Tasks.Where(task =>
                         task.Position >= moveTaskEventDTO.ToPosition
@@ -268,15 +270,15 @@ namespace backend.Application.Services
             }
         }
 
-        public async Task<ServiceResult<string>> MoveListTask(ObjectId projectId, ListTaskMoveEventDTO moveTaskEventDTO)
+        public async Task<ServiceResult<string>> MoveColumn(ObjectId projectId, ColumnMoveEventDTO moveTaskEventDTO)
         {
             try
             {
                 var columnId = ObjectId.Parse(moveTaskEventDTO.ColumnId);
 
-                var allColumns = await _repository.GetListTasks(projectId);
+                var allColumns = await _repository.GetColumns(projectId);
 
-                var movingColumn = await _repository.GetListTaskById(projectId, columnId);
+                var movingColumn = await _repository.GetColumnById(projectId, columnId);
 
                 if (moveTaskEventDTO.FromPosition > moveTaskEventDTO.ToPosition)
                 {

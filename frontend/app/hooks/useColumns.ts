@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { IColumnModifyRequest, IColumnModifyResponse, IColumnMoveRequest, IColumnMoveResponse } from "../types/IColumn";
-import { tasksApiInstance } from "../api/tasksApi";
+import { tasksApiInstance } from "../api/kanbanApi";
 
 export const useColumn = (projectId: string, columnId: string) => {
   return useQuery({

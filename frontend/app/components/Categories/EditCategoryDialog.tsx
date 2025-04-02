@@ -17,8 +17,6 @@ import { ICategoryModifyRequest, ICategory } from "@/app/types/ICategory";
 import FormInput from "@/app/components/Forms/FormInput";
 import { useUpdateCategory } from "@/app/hooks/useCategories";
 import { Pencil } from "lucide-react";
-import { useProjectId } from "@/app/stores/useProjectId";
-import { useProject } from "@/app/hooks/useProjects";
 
 interface EditCategoryDialogProps {
   category: ICategory;
@@ -65,7 +63,7 @@ export default function EditCategoryDialog({ category }: EditCategoryDialogProps
   return (
     <Dialog open={isOpen} onOpenChange={handleDialogClose}>
       <DialogTrigger asChild>
-        <Button variant="ghost" size="sm">
+        <Button variant="ghost" size="sm" className="cursor-pointer">
           <Pencil size={16} className="mr-2" />
           Изменить
         </Button>
@@ -91,10 +89,15 @@ export default function EditCategoryDialog({ category }: EditCategoryDialogProps
               variant="outline"
               onClick={() => setIsOpen(false)}
               disabled={isPending}
+              className="close-button"
             >
               Отменить
             </Button>
-            <Button type="submit" disabled={!isValid || isPending}>
+            <Button
+              type="submit"
+              disabled={!isValid || isPending}
+              className="save-button"
+            >
               {isPending ? "Сохранение..." : "Сохранить"}
             </Button>
           </DialogFooter>
