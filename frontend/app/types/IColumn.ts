@@ -5,6 +5,7 @@ export interface IColumn {
   name: string;
   position: number;
   isFinished: boolean;
+  color?: string | null;
   tasks: ITask[];
 }
 
@@ -12,6 +13,7 @@ export interface IColumnModifyRequest {
   name: string;
   position: number;
   isFinished: boolean;
+  color?: string | null;
 }
 
 export interface IColumnModifyResponse {
@@ -24,6 +26,7 @@ export interface IColumnResponse {
   name: string;
   position: number;
   isFinished: boolean;
+  color?: string | null;
 }
 
 export interface IColumnMoveRequest {

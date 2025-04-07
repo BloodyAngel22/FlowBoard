@@ -12,7 +12,7 @@ export const taskValidator = yup.object({
     then: (schema) =>
       schema
         .min(2, "Описание должно быть не менее 2 символов")
-        .max(100, "Описание должно быть не более 100 символов"),
+        .max(1000, "Описание должно быть не более 1000 символов"),
     otherwise: (schema) => schema.optional(),
   }),
   startDate: yup.date().nullable(),

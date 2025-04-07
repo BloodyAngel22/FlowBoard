@@ -83,6 +83,7 @@ namespace backend.Infrastructure.Repositories
             columnToUpdate.Name = column.Name;
             columnToUpdate.Position = column.Position;
             columnToUpdate.IsFinished = column.IsFinished;
+            columnToUpdate.Color = column.Color;
 
             await _context.Projects.ReplaceOneAsync(project => project.Id == projectId, project);
         }

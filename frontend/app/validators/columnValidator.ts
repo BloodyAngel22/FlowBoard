@@ -7,4 +7,5 @@ export const columnValidator = yup.object({
     .min(3, "Название должно быть не менее 3 символов")
     .max(50, "Название должно быть не более 50 символов"),
   isFinished: yup.boolean().required(),
+  color: yup.string().nullable().notRequired(),
 });

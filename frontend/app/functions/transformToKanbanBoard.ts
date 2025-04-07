@@ -13,6 +13,7 @@ export const transformToKanbanBoard = (data: IProjectFull): MyKanbanBoard => {
       metadata: {
         isFinished: list.isFinished,
         position: list.position,
+        color: list.color,
       },
       cards: list.tasks.map((task) => ({
         id: task.id,

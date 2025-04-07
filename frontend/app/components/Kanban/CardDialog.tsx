@@ -129,7 +129,7 @@ function CardDialogContent({ projectId, cardId, columnId, onClose }: { projectId
               />
             </DialogTitle>
           </DialogHeader>
-          <div className="h-[300px] w-full overflow-y-auto mt-4 mb-8 pr-4">
+          <div className="max-h-[400px] w-full overflow-y-auto mt-4 mb-8 pr-4">
             <div className="flex flex-col gap-3 justify-start items-start space-x-2 w-full">
               <FormTextarea
                 register={register}

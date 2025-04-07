@@ -13,6 +13,7 @@ namespace backend.Application.DTOs
         public required string Name { get; set; }
         public required int Position { get; set; }
         public required bool IsFinished { get; set; } = false;
+        public string? Color { get; set; }
     }
 
     public class ColumnResponseWithoutTasks
@@ -22,6 +23,7 @@ namespace backend.Application.DTOs
         public required string Name { get; set; }
         public required int Position { get; set; }
         public required bool IsFinished { get; set; }
+        public required string? Color { get; set; }
     }
 
     public class ColumnMoveEventDTO

@@ -33,7 +33,8 @@ namespace backend.Application.Services
                     Id = column.Id,
                     Name = column.Name,
                     Position = column.Position,
-                    IsFinished = column.IsFinished
+                    IsFinished = column.IsFinished,
+                    Color = column.Color
                 };
 
                 return ServiceResult<ColumnResponseWithoutTasks>.Ok(columnDTOWithoutTasks);
@@ -53,7 +54,8 @@ namespace backend.Application.Services
                 {
                     Name = columnDTO.Name,
                     Position = columnDTO.Position,
-                    IsFinished = columnDTO.IsFinished
+                    IsFinished = columnDTO.IsFinished,
+                    Color = columnDTO.Color
                 };
 
                 var createdColumn = await _repository.CreateColumn(projectId, column);
@@ -76,7 +78,8 @@ namespace backend.Application.Services
                     Id = id,
                     Name = columnDTO.Name,
                     Position = columnDTO.Position,
-                    IsFinished = columnDTO.IsFinished
+                    IsFinished = columnDTO.IsFinished,
+                    Color = columnDTO.Color
                 };
 
                 await _repository.UpdateColumn(projectId, id, column);

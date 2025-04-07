@@ -60,7 +60,7 @@ export default function CustomCard({
         {card.title}
       </h4>
 
-      <p className="mb-1.5 text-sm text-zinc-600 dark:text-zinc-400">
+      <p className="mb-1.5 text-sm text-zinc-600 dark:text-zinc-400 line-clamp-2">
         {card.description || "Описание отсутствует"}
       </p>
 

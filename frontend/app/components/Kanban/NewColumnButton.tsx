@@ -19,6 +19,7 @@ import { useProjectId } from "@/app/stores/useProjectId";
 import { useCreateColumn } from "@/app/hooks/useColumns";
 import { IColumnModifyRequest } from "@/app/types/IColumn";
 import { Plus } from "lucide-react";
+import FormColorPicker from "../Forms/FormColorPicker";
 
 interface NewColumnButtonProps {
   lastColumnPosition: number;
@@ -41,6 +42,7 @@ export default function NewColumnButton({
     defaultValues: {
       name: "test column",
       isFinished: false,
+      color: null,
     },
   });
 
@@ -54,6 +56,7 @@ export default function NewColumnButton({
         name: data.name,
         isFinished: data.isFinished,
         position: lastColumnPosition + 1,
+        color: data.color || null,
       };
 
       mutate(newColumn, {
@@ -80,7 +83,7 @@ export default function NewColumnButton({
                 Добавить колонку
               </DialogTitle>
             </DialogHeader>
-            <div className="mt-6 mb-6 max-h-[150px] overflow-y-auto pr-4">
+            <div className="mt-6 mb-6 max-h-[400px] overflow-y-auto pr-4">
               <div className="flex w-full flex-col gap-4">
                 <FormInput
                   register={register}
@@ -94,6 +97,12 @@ export default function NewColumnButton({
                   control={control}
                   name="isFinished"
                   label="Является ли колонка завершающей?"
+                  errors={errors}
+                />
+                <FormColorPicker
+                  control={control}
+                  name="color"
+                  label="Цвет"
                   errors={errors}
                 />
               </div>

@@ -14,6 +14,7 @@ import { useColumn, useUpdateColumn, useDeleteColumn } from "@/app/hooks/useColu
 import { IColumnModifyRequest } from "@/app/types/IColumn";
 import AlertDelete from "./AlertDelete";
 import { Loader2 } from "lucide-react";
+import FormColorPicker from "../Forms/FormColorPicker";
 
 interface ColumnDialogProps {
   columnId: string | undefined;
@@ -42,6 +43,7 @@ function ColumnDialogContent({ projectId, columnId, onClose }: { projectId: stri
       reset({
         name: data.data.name || "",
         isFinished: data.data.isFinished || false,
+        color: data.data.color || null,
       });
     }
   }, [isSuccess, data, reset]);
@@ -85,6 +87,7 @@ function ColumnDialogContent({ projectId, columnId, onClose }: { projectId: stri
         name: formData.name,
         isFinished: formData.isFinished,
         position: data.data.position,
+        color: formData?.color || null,
       };
 
       updateColumn(updatedColumn, {
@@ -112,12 +115,18 @@ function ColumnDialogContent({ projectId, columnId, onClose }: { projectId: stri
               />
             </DialogTitle>
           </DialogHeader>
-          <div className="mt-6 mb-6 max-h-[200px] w-full overflow-y-auto pr-4">
+          <div className="mt-6 mb-6 max-h-[400px] w-full overflow-y-auto pr-4">
             <div className="flex w-full flex-col gap-4">
               <FormCheckbox
                 control={control}
                 name="isFinished"
                 label="Является ли колонка завершающей?"
+                errors={errors}
+              />
+              <FormColorPicker
+                control={control}
+                name="color"
+                label="Цвет"
                 errors={errors}
               />
             </div>

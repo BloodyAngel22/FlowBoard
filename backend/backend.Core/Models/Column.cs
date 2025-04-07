@@ -19,4 +19,7 @@ public class Column
     public required int Position { get; set; }
     public required bool IsFinished { get; set; }
     public List<Task> Tasks { get; set; } = [];
+
+    [BsonIgnoreIfNull]
+    public string? Color { get; set; }
 }

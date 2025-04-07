@@ -28,6 +28,7 @@ export interface MyColumn extends Column<MyCard> {
   metadata: {
     isFinished: boolean;
     position: number;
+    color?: string | null;
   };
 }
 

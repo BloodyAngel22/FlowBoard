@@ -1,6 +1,7 @@
 import { MyColumn } from "@/app/types/TKanban";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../ui/tooltip";
 import { Check } from "lucide-react";
+import { twMerge } from "tailwind-merge";
 
 interface CustomColumnHeaderProps {
   column: MyColumn;
@@ -13,7 +14,13 @@ export default function CustomColumnHeader({
 }: CustomColumnHeaderProps) {
   return (
     <div
-      className="flex w-62 cursor-pointer items-center justify-between rounded-t-md bg-zinc-800 p-3 text-lg font-semibold text-white transition-colors hover:bg-zinc-700 dark:bg-zinc-700 dark:hover:bg-zinc-600"
+      className={twMerge(
+        "flex w-62 cursor-pointer items-center justify-between rounded-t-md p-3 text-lg font-semibold text-white transition-colors",
+        column.metadata.color
+          ? "column-hover"
+          : "dark:bg-zinc-700 dark:hover:bg-zinc-600 bg-zinc-800 hover:bg-zinc-700 "
+      )}
+      style={{ backgroundColor: column.metadata.color || "" }}
       onClick={() => {
         console.log(column);
         handleColumnClick(column);
