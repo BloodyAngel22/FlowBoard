@@ -4,6 +4,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDatabaseServices(builder.Configuration)
 				.AddKanbanServices()
+				.AddValidators()
 				.AddApiServices()
 				.AddCorsServices();
 

@@ -4,7 +4,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using backend.Application.DTOs;
 using backend.Application.Entities;
+using backend.Application.Entities.Validation;
 using backend.Core.IRepositories;
+using FluentValidation;
 using Microsoft.Extensions.Logging;
 using MongoDB.Bson;
 
@@ -16,11 +18,19 @@ namespace backend.Application.Services
     public class KanbanBoardService
     (
         IKanbanBoardRepository repository,
-        ILogger<KanbanBoardService> logger
+        ILogger<KanbanBoardService> logger,
+        IValidator<ColumnDTO> columnValidator,
+        IValidator<TaskDTO> taskValidator,
+        IValidator<ColumnMoveEventDTO> columnMoveEventValidator,
+        IValidator<TaskMoveEventDTO> taskMoveEventValidator
     )
     {
         private readonly IKanbanBoardRepository _repository = repository;
         private readonly ILogger<KanbanBoardService> _logger = logger;
+        private readonly IValidator<ColumnDTO> _columnValidator = columnValidator;
+        private readonly IValidator<TaskDTO> _taskValidator = taskValidator;
+        private readonly IValidator<ColumnMoveEventDTO> _columnMoveEventValidator = columnMoveEventValidator;
+        private readonly IValidator<TaskMoveEventDTO> _taskMoveEventValidator = taskMoveEventValidator;
 
         public async Task<ServiceResult<ColumnResponseWithoutTasks>> GetColumnInfo(ObjectId projectId, ObjectId id)
         {
@@ -48,6 +58,14 @@ namespace backend.Application.Services
 
         public async Task<ServiceResult<string>> CreateColumn(ObjectId projectId, ColumnDTO columnDTO)
         {
+            var validationResult = await _columnValidator.ValidateAsync(columnDTO);
+            if (!validationResult.IsValid)
+            {
+                var errors = ValidatorError.GetErrors(validationResult);
+                _logger.LogError("Validation failed {errors}", ValidatorError.GetErrorsString(errors));
+                return ServiceResult<string>.Fail();
+            }
+
             try
             {
                 var column = new MColumn
@@ -71,6 +89,14 @@ namespace backend.Application.Services
 
         public async Task<ServiceResult<string>> UpdateColumn(ObjectId projectId, ObjectId id, ColumnDTO columnDTO)
         {
+            var validationResult = await _columnValidator.ValidateAsync(columnDTO);
+            if (!validationResult.IsValid)
+            {
+                var errors = ValidatorError.GetErrors(validationResult);
+                _logger.LogError("Validation failed {errors}", ValidatorError.GetErrorsString(errors));
+                return ServiceResult<string>.Fail();
+            }
+
             try
             {
                 var column = new MColumn
@@ -125,6 +151,14 @@ namespace backend.Application.Services
 
         public async Task<ServiceResult<string>> CreateTask(ObjectId projectId, ObjectId columnId, TaskDTO taskDTO)
         {
+            var validationResult = await _taskValidator.ValidateAsync(taskDTO);
+            if (!validationResult.IsValid)
+            {
+                var errors = ValidatorError.GetErrors(validationResult);
+                _logger.LogError("Validation failed {errors}", ValidatorError.GetErrorsString(errors));
+                return ServiceResult<string>.Fail();
+            }
+
             try
             {
                 var task = new MTask
@@ -151,6 +185,14 @@ namespace backend.Application.Services
 
         public async Task<ServiceResult<string>> UpdateTask(ObjectId projectId, ObjectId columnId, ObjectId taskId, TaskDTO taskDTO)
         {
+            var validationResult = await _taskValidator.ValidateAsync(taskDTO);
+            if (!validationResult.IsValid)
+            {
+                var errors = ValidatorError.GetErrors(validationResult);
+                _logger.LogError("Validation failed {errors}", ValidatorError.GetErrorsString(errors));
+                return ServiceResult<string>.Fail();
+            }
+
             try
             {
                 var task = new MTask
@@ -204,6 +246,14 @@ namespace backend.Application.Services
 
         public async Task<ServiceResult<string>> MoveTask(ObjectId projectId, TaskMoveEventDTO moveTaskEventDTO)
         {
+            var validationResult = await _taskMoveEventValidator.ValidateAsync(moveTaskEventDTO);
+            if (!validationResult.IsValid)
+            {
+                var errors = ValidatorError.GetErrors(validationResult);
+                _logger.LogError("Validation failed {errors}", ValidatorError.GetErrorsString(errors));
+                return ServiceResult<string>.Fail();
+            }
+
             try
             {
                 var fromColumnId = ObjectId.Parse(moveTaskEventDTO.FromColumnId);
@@ -275,6 +325,14 @@ namespace backend.Application.Services
 
         public async Task<ServiceResult<string>> MoveColumn(ObjectId projectId, ColumnMoveEventDTO moveTaskEventDTO)
         {
+            var validationResult = await _columnMoveEventValidator.ValidateAsync(moveTaskEventDTO);
+            if (!validationResult.IsValid)
+            {
+                var errors = ValidatorError.GetErrors(validationResult);
+                _logger.LogError("Validation failed {errors}", ValidatorError.GetErrorsString(errors));
+                return ServiceResult<string>.Fail();
+            }
+
             try
             {
                 var columnId = ObjectId.Parse(moveTaskEventDTO.ColumnId);

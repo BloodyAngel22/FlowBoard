@@ -2,10 +2,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using backend.Application.DTOs;
 using backend.Application.Services;
+using backend.Application.Validators;
 using backend.Core.IRepositories;
 using backend.Infrastructure;
 using backend.Infrastructure.Repositories;
+using FluentValidation;
 using MongoDB.Driver;
 
 namespace backend.WebApi.Extensions
@@ -38,6 +41,18 @@ namespace backend.WebApi.Extensions
 
             services.AddScoped<ICategoryRepository, CategoryRepository>();
             services.AddScoped<CategoryService>();
+
+            return services;
+        }
+
+        public static IServiceCollection AddValidators(this IServiceCollection services)
+        {
+            services.AddScoped<IValidator<CategoryDTO>, CategoryValidator>();
+            services.AddScoped<IValidator<ProjectDTO>, ProjectValidator>();
+            services.AddScoped<IValidator<ColumnDTO>, ColumnValidator>();
+            services.AddScoped<IValidator<TaskDTO>, TaskValidator>();
+            services.AddScoped<IValidator<ColumnMoveEventDTO>, ColumnMoveEventValidator>();
+            services.AddScoped<IValidator<TaskMoveEventDTO>, TaskMoveEventValidator>();
 
             return services;
         }

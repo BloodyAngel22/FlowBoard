@@ -5,7 +5,9 @@ using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using backend.Application.DTOs;
 using backend.Application.Entities;
+using backend.Application.Entities.Validation;
 using backend.Core.IRepositories;
+using FluentValidation;
 using Microsoft.Extensions.Logging;
 using MongoDB.Bson;
 
@@ -16,11 +18,13 @@ namespace backend.Application.Services
     public class KanbanProjectsService
     (
         IKanbanProjectRepository kanbanProjectRepository,
-        ILogger<KanbanProjectsService> logger
+        ILogger<KanbanProjectsService> logger,
+        IValidator<ProjectDTO> projectValidator
     )
     {
         private readonly IKanbanProjectRepository _kanbanProjectRepository = kanbanProjectRepository;
         private readonly ILogger<KanbanProjectsService> _logger = logger;
+        private readonly IValidator<ProjectDTO> _projectValidator = projectValidator;
 
         public async Task<ServiceResult<List<ProjectDTOWithoutColumns>>> GetAllProjects()
         {
@@ -51,6 +55,14 @@ namespace backend.Application.Services
 
         public async Task<ServiceResult<MProject>> CreateProject(ProjectDTO project)
         {
+            var validationResult = await _projectValidator.ValidateAsync(project);
+            if (!validationResult.IsValid)
+            {
+                var errors = ValidatorError.GetErrors(validationResult);
+                _logger.LogError("Validation failed {errors}", ValidatorError.GetErrorsString(errors));
+                return ServiceResult<MProject>.Fail();
+            }
+            
             var newProject = new MProject
             {
                 Name = project.Name,
@@ -72,6 +84,14 @@ namespace backend.Application.Services
 
         public async Task<ServiceResult<string>> UpdateProject(ObjectId id, ProjectDTO project)
         {
+            var validationResult = await _projectValidator.ValidateAsync(project);
+            if (!validationResult.IsValid)
+            {
+                var errors = ValidatorError.GetErrors(validationResult);
+                _logger.LogError("Validation failed {errors}", ValidatorError.GetErrorsString(errors));
+                return ServiceResult<string>.Fail();
+            }
+
             var newProject = new MProject
             {
                 Id = id,

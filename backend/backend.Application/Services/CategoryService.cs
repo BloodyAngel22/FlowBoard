@@ -1,10 +1,14 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 using backend.Application.DTOs;
 using backend.Application.Entities;
+using backend.Application.Entities.Validation;
+using backend.Application.Validators;
 using backend.Core.IRepositories;
+using FluentValidation;
 using Microsoft.Extensions.Logging;
 using MongoDB.Bson;
 
@@ -15,11 +19,13 @@ namespace backend.Application.Services
     public class CategoryService
     (
         ICategoryRepository categoryRepository,
-        ILogger<CategoryService> logger
+        ILogger<CategoryService> logger,
+        IValidator<CategoryDTO> categoryValidator
     )
     {
         private readonly ICategoryRepository _categoryRepository = categoryRepository;
         private readonly ILogger<CategoryService> _logger = logger;
+        private readonly IValidator<CategoryDTO> _categoryValidator = categoryValidator;
 
         public async Task<ServiceResult<List<MCategory>>> GetCategories()
         {
@@ -59,6 +65,14 @@ namespace backend.Application.Services
 
         public async Task<ServiceResult<string>> CreateCategory(CategoryDTO category)
         {
+            var validationResult = await _categoryValidator.ValidateAsync(category);
+            if (!validationResult.IsValid)
+            {
+                var errors = ValidatorError.GetErrors(validationResult);
+                _logger.LogError("Validation failed: {errors}", ValidatorError.GetErrorsString(errors));
+                return ServiceResult<string>.Fail();
+            }
+
             var newCategory = new MCategory
             {
                 Name = category.Name
@@ -79,6 +93,14 @@ namespace backend.Application.Services
 
         public async Task<ServiceResult<string>> UpdateCategory(ObjectId id, CategoryDTO category)
         {
+            var validationResult = await _categoryValidator.ValidateAsync(category);
+            if (!validationResult.IsValid)
+            {
+                var errors = ValidatorError.GetErrors(validationResult);
+                _logger.LogError("Validation failed {errors}", ValidatorError.GetErrorsString(errors));
+                return ServiceResult<string>.Fail();
+            }
+
             var categoryToUpdate = new MCategory
             {
                 Id = id,

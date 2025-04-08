@@ -2,8 +2,8 @@ using FluentValidation.Results;
 
 namespace backend.Application.Entities.Validation
 {
-    public class ValidatorError
-    {
+	public class ValidatorError
+	{
 		public required string PropertyName { get; set; }
 		public required string ErrorMessage { get; set; }
 
@@ -14,6 +14,11 @@ namespace backend.Application.Entities.Validation
 				PropertyName = x.PropertyName,
 				ErrorMessage = x.ErrorMessage
 			}).ToList();
+		}
+
+		public static string GetErrorsString(List<ValidatorError> errors)
+		{
+			return string.Join(", ", errors.Select(e => $"{e.PropertyName}: {e.ErrorMessage}"));
 		}
     }
 }
