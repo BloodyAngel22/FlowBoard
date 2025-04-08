@@ -123,6 +123,16 @@ namespace backend.Application.Services
         {
             try
             {
+                var column = await _repository.GetColumnById(projectId, id);
+                var columns = await _repository.GetColumns(projectId);
+
+                var columnsToShift = columns.Where(c => c.Position > column.Position).ToList();
+
+                foreach (var col in columnsToShift)
+                {
+                    await _repository.ChangePositionToColumn(projectId, col.Id, col.Position - 1);
+                }
+
                 await _repository.DeleteColumn(projectId, id);
 
                 return ServiceResult<string>.Ok("List task deleted");

@@ -33,7 +33,7 @@ export default function CustomColumnHeader({
             <TooltipTrigger>
               <Check className="font-semibold text-green-600" size={16} />
             </TooltipTrigger>
-            <TooltipContent className="w-64 text-center dark:bg-zinc-200">
+            <TooltipContent className="w-64 text-center dark:bg-zinc-300">
               Задачи, перемещенные в этот столбец, помечаются как выполненные
             </TooltipContent>
           </Tooltip>

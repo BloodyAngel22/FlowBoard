@@ -3,6 +3,10 @@ import { MyCard } from "@/app/types/TKanban";
 import { Calendar, CheckCircle, Clock } from "lucide-react";
 import { twMerge } from "tailwind-merge";
 import { Badge } from "../ui/badge";
+import React from "react";
+import { getPriorityData } from "@/app/data/priority";
+import { Tooltip, TooltipProvider, TooltipTrigger } from "../ui/tooltip";
+import { TooltipContent } from "@radix-ui/react-tooltip";
 
 interface CustomCardProps {
   card: MyCard;
@@ -36,6 +40,8 @@ export default function CustomCard({
         month: "long",
       })
     : null;
+  
+  const priorityData = getPriorityData(card.metadata.priority);
 
   return (
     <div
@@ -91,7 +97,7 @@ export default function CustomCard({
         </div>
       </div>
 
-      <div className="mt-3 flex items-center text-xs">
+      <div className="mt-3 flex items-center text-xs justify-between">
         {isFinished ? (
           <div className="flex items-center text-green-600 dark:text-green-400">
             <CheckCircle className="mr-1 h-3.5 w-3.5" />
@@ -102,6 +108,22 @@ export default function CustomCard({
             <Clock className="mr-1 h-3.5 w-3.5" />
             <span>В работе</span>
           </div>
+        )}
+        {card.metadata.priority && (
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger>
+                <p className={`flex items-center ${priorityData.styles}`}>
+                  {priorityData.icon && (
+                    <priorityData.icon className="mr-1 h-4.5 w-4.5" />
+                  )}
+                </p>
+              </TooltipTrigger>
+              <TooltipContent className="w-max py-1 px-2 rounded-xl text-center dark:bg-zinc-300 text-zinc-900">
+                {priorityData.label}
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
         )}
       </div>
     </div>

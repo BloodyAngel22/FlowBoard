@@ -15,10 +15,10 @@ namespace backend.Application.Validators
                 .NotEmpty().WithMessage("TaskId is required");
 
             RuleFor(x => x.FromPosition)
-                .NotEmpty().WithMessage("FromPosition is required");
+                .Must(_ => true).WithMessage("FromPosition is required");
 
             RuleFor(x => x.ToPosition)
-                .NotEmpty().WithMessage("ToPosition is required");
+                .Must(_ => true).WithMessage("ToPosition is required");
 
             RuleFor(x => x.FromColumnId)
                 .NotEmpty().WithMessage("FromColumnId is required");
