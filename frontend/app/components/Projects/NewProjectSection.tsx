@@ -57,17 +57,17 @@ export default function NewProjectSection() {
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
         <DialogTrigger asChild>
           <Button
-            className="dark:bg-zinc-300 dark:hover:bg-zinc-100 transition-colors duration-200 cursor-pointer"
+            className="dark:bg-zinc-300 bg-zinc-200 text-zinc-900 dark:hover:bg-zinc-100 transition-colors duration-200 cursor-pointer"
             onClick={() => setIsOpen(true)}
           >
             <Plus className="h-4 w-4" />
             Создать проект
           </Button>
         </DialogTrigger>
-        <DialogContent className="sm:max-w-[425px] border-zinc-800 bg-zinc-950">
+        <DialogContent className="sm:max-w-[425px] dark:border-zinc-800 dark:bg-zinc-950">
           <form onSubmit={handleSubmit(handleCreateProject)}>
             <DialogHeader>
-              <DialogTitle className="text-zinc-100">
+              <DialogTitle className="dark:text-zinc-100">
                 Создать новый проект
               </DialogTitle>
             </DialogHeader>

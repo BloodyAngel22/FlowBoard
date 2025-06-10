@@ -92,15 +92,18 @@ namespace backend.Application.Services
                 return ServiceResult<string>.Fail();
             }
 
-            var newProject = new MProject
-            {
-                Id = id,
-                Name = project.Name,
-                Description = project.Description
-            };
-
             try
             {
+                var existingProject = await _kanbanProjectRepository.GetProject(id);
+
+                var newProject = new MProject
+                {
+                    Id = id,
+                    Name = project.Name,
+                    Description = project.Description,
+                    Columns = existingProject?.Columns ?? [],
+                };
+
                 await _kanbanProjectRepository.UpdateProject(id, newProject);
 
                 return ServiceResult<string>.Ok("MProject updated successfully");

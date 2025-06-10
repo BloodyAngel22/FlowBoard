@@ -99,13 +99,16 @@ namespace backend.Application.Services
 
             try
             {
+                var existingColumn = await _repository.GetColumnById(projectId, id);
+
                 var column = new MColumn
                 {
                     Id = id,
                     Name = columnDTO.Name,
                     Position = columnDTO.Position,
                     IsFinished = columnDTO.IsFinished,
-                    Color = columnDTO.Color
+                    Color = columnDTO.Color,
+                    Tasks = existingColumn.Tasks,
                 };
 
                 await _repository.UpdateColumn(projectId, id, column);

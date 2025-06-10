@@ -10,7 +10,7 @@ export default function KanbanHeader() {
 
   return (
     <>
-      <div className="border-b border-zinc-800 bg-zinc-950/80 backdrop-blur-sm">
+      <div className="border-b dark:border-zinc-800 dark:bg-zinc-950/80 backdrop-blur-sm">
         <div className="container mx-auto flex h-16 items-center justify-between px-4">
           <FlowBoardLogo />
           <div className="flex gap-4 items-center">

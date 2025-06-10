@@ -40,7 +40,7 @@ export default function FormInput<T extends FieldValues>({
           <input
             type="text"
             className={twMerge(
-              "bg-transparent duration-300 pl-2 m-0 -ml-2 inline-block min-w-0 hover:bg-zinc-800/80 focus:bg-transparent rounded-md"
+              "bg-transparent duration-300 pl-2 m-0 -ml-2 inline-block min-w-0 dark:hover:bg-zinc-800/80 focus:bg-transparent rounded-md"
             )}
             {...register(name)}
             placeholder={placeholder}

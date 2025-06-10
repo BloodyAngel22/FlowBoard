@@ -12,7 +12,7 @@ export default function FlowBoardLogo() {
         height={LOGO_SIZE}
         className="h-10 w-10 md:h-12 md:w-12"
       />
-      <span className="text-xl font-bold text-zinc-100 md:text-2xl">FlowBoard</span>
+      <span className="text-xl font-bold text-zinc-800 dark:text-zinc-100 md:text-2xl">FlowBoard</span>
     </div>
   )
 }

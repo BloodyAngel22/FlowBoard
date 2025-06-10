@@ -62,7 +62,7 @@
   --accent-foreground: oklch(0.21 0.006 285.885);
   --destructive: oklch(0.577 0.245 27.325);
   --destructive-foreground: oklch(0.577 0.245 27.325);
-  --border: oklch(0.92 0.004 286.32);
+  --border: oklch(1 0 0);
   --input: oklch(0.92 0.004 286.32);
   --ring: oklch(0.705 0.015 286.067);
   --chart-1: oklch(0.646 0.222 41.116);
@@ -142,11 +142,11 @@
 } */
 
 .close-button {
-  @apply dark:bg-zinc-900 dark:hover:bg-zinc-900/75 transition-colors duration-200 cursor-pointer dark:text-white border-2 border-zinc-900 dark:border-zinc-900/75;
+  @apply dark:bg-zinc-900 dark:hover:bg-zinc-900/75 transition-colors duration-200 cursor-pointer dark:text-white border-2 text-zinc-900 bg-zinc-50 border-zinc-100 dark:border-zinc-900/75;
 }
 
 .create-button, .save-button {
-  @apply dark:bg-zinc-300 dark:hover:bg-zinc-100 transition-colors duration-200 cursor-pointer;
+  @apply dark:bg-zinc-300 dark:hover:bg-zinc-100 bg-zinc-200 text-zinc-900 hover:bg-zinc-800 transition-colors duration-200 cursor-pointer;
 }
 
 .delete-button {

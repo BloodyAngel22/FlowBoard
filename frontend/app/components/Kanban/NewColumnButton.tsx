@@ -79,7 +79,7 @@ export default function NewColumnButton({
         <DialogContent className="border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 sm:max-w-md">
           <form onSubmit={handleSubmit(handleSubmitForm)}>
             <DialogHeader>
-              <DialogTitle className="text-zinc-800 dark:text-zinc-100">
+              <DialogTitle className="text-zinc-600 dark:text-zinc-100">
                 Добавить колонку
               </DialogTitle>
             </DialogHeader>

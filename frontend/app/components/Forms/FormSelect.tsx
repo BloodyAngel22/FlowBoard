@@ -10,6 +10,8 @@ import { FieldErrors, FieldValues, Path, Control } from "react-hook-form";
 import { Controller } from "react-hook-form";
 import { IFormSelect } from "../../types/IFormSelect";
 import { Label } from "../ui/label";
+import { Button } from "../ui/button";
+import { CircleX } from "lucide-react";
 
 interface FormSelectProps<T extends FieldValues> {
   control: Control<T>;
@@ -32,13 +34,6 @@ export default function FormSelect<T extends FieldValues>({
   isRequired = false,
   allowClear = false,
 }: FormSelectProps<T>) {
-  const CLEAR_VALUE = "__none__";
-
-  const selectOptions =
-    allowClear && !isRequired
-      ? [{ value: CLEAR_VALUE, label: "Не выбрано" }, ...options]
-      : options;
-
   const firstRealOption = options[0];
   const expectedType = firstRealOption
     ? typeof firstRealOption.value
@@ -54,39 +49,54 @@ export default function FormSelect<T extends FieldValues>({
         control={control}
         name={name}
         render={({ field }) => (
-          <Select
-            onValueChange={(value) => {
-              if (value === CLEAR_VALUE && allowClear) {
-                field.onChange(undefined);
-              } else if (value !== "") {
-                field.onChange(
-                  expectedType === "number" ? Number(value) : value
-                );
+          <div className="flex items-center gap-2">
+            <Select
+              onValueChange={(value) => {
+                if (value !== "") {
+                  field.onChange(
+                    expectedType === "number" ? Number(value) : value
+                  );
+                }
+              }}
+              value={
+                field.value !== undefined && field.value !== null
+                  ? String(field.value)
+                  : ""
               }
-            }}
-            value={
-              field.value === null || field.value === undefined
-                ? CLEAR_VALUE
-                : String(field.value)
-            }
-          >
-            <SelectTrigger>
-              <SelectValue placeholder={placeholder} />
-            </SelectTrigger>
-            <SelectContent>
-              {selectOptions.map((option) => (
-                <SelectItem
-                  key={String(option.value)}
-                  value={String(option.value)}
+            >
+              <SelectTrigger>
+                <SelectValue placeholder={placeholder} />
+              </SelectTrigger>
+              <SelectContent>
+                {options.map((option) => (
+                  <SelectItem
+                    key={String(option.value)}
+                    value={String(option.value)}
+                  >
+                    {option.icon && (
+                      <option.icon className={twMerge(option.styles, "mr-2")} />
+                    )}
+                    {option.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            {allowClear &&
+              field.value !== undefined &&
+              field.value !== null && (
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  className="h-6 w-6"
+                  onClick={() => {
+                    field.onChange(undefined);
+                  }}
                 >
-                  {option.icon && (
-                    <option.icon className={twMerge(option.styles, "mr-2")} />
-                  )}
-                  {option.label}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+                  <CircleX className="h-4 w-4" />
+                </Button>
+              )}
+          </div>
         )}
       />
       {errors[name] && (

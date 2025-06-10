@@ -54,6 +54,7 @@ function CardDialogContent({ projectId, cardId, columnId, onClose }: { projectId
         priority: data.data.priority !== null && !isNaN(data.data.priority) ? data.data.priority : 1,
         startDate: data.data.startDate ? new Date(data.data.startDate) : null,
         endDate: data.data.endDate ? new Date(data.data.endDate) : null,
+        categoryId: data.data.categoryId ?? undefined, 
       });
     }
   }, [isSuccess, data, reset]);
